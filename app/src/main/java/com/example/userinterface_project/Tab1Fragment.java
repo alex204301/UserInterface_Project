@@ -22,9 +22,9 @@ public class Tab1Fragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText edNoteName = new EditText(v.getContext());
+                View noteDialogView = inflater.inflate(R.layout.tab1_dialog, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setView(edNoteName)
+                builder.setView(noteDialogView)
                         .setTitle("단어장 이름")
                         .setNegativeButton("취소", null)
                         .setPositiveButton("만들기", null)
