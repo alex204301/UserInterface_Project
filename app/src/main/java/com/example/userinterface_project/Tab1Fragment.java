@@ -1,5 +1,6 @@
 package com.example.userinterface_project;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,11 +24,18 @@ public class Tab1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 View noteDialogView = inflater.inflate(R.layout.tab1_dialog, null);
+                EditText edNoteName = noteDialogView.findViewById(R.id.note_name);
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setView(noteDialogView)
                         .setTitle("단어장 이름")
                         .setNegativeButton("취소", null)
-                        .setPositiveButton("만들기", null)
+                        .setPositiveButton("만들기", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String noteName = edNoteName.getText().toString();
+                                Toast.makeText(getActivity(), noteName, Toast.LENGTH_SHORT).show();
+                            }
+                        })
                         .show();
             }
         });
