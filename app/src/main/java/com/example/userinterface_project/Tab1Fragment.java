@@ -2,11 +2,13 @@ package com.example.userinterface_project;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,7 +22,13 @@ public class Tab1Fragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "단어장 추가", Toast.LENGTH_SHORT).show();
+                EditText edNoteName = new EditText(v.getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setView(edNoteName)
+                        .setTitle("단어장 이름")
+                        .setNegativeButton("취소", null)
+                        .setPositiveButton("만들기", null)
+                        .show();
             }
         });
         return rootview;
