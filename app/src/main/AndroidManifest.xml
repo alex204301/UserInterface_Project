@@ -10,15 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UserInterface_Project">
-        <activity
-            android:name=".WordListActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".FilterActivity"
+            android:exported="true" />
         <activity
             android:name=".AddWordActivity"
             android:exported="true"
