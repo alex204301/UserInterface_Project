@@ -4,12 +4,14 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -30,9 +32,7 @@ public class AddWordActivity extends AppCompatActivity {
 
         editWord = findViewById(R.id.edit_word);
         editMeaning = findViewById(R.id.edit_meaning);
-
         radioGroup = findViewById(R.id.radio_group_difficulty);
-
         buttonAdd = findViewById(R.id.button_add);
 
         if (savedInstanceState == null) {
@@ -55,12 +55,15 @@ public class AddWordActivity extends AppCompatActivity {
         };
         editWord.addTextChangedListener(textWatcher);
         editMeaning.addTextChangedListener(textWatcher);
-
         radioGroup.setOnCheckedChangeListener(
                 (group, checkedId) -> updateButtonEnabled()
         );
-
         updateButtonEnabled();
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     /**
@@ -73,6 +76,15 @@ public class AddWordActivity extends AppCompatActivity {
                 radioGroup.getCheckedRadioButtonId() != -1;
 
         buttonAdd.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -8,7 +8,7 @@
     <string name="difficulty">난이도</string>
 
     <string name="difficulty_easy">쉬움</string>
-    <string name="difficulty_medium">보통</string>
+    <string name="difficulty_normal">보통</string>
     <string name="difficulty_hard">어려움</string>
 
     <string name="add_word">단어 추가</string>

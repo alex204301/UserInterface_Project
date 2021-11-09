@@ -63,11 +63,11 @@
                 android:text="@string/difficulty_easy" />
 
             <RadioButton
-                android:id="@+id/radio_medium"
+                android:id="@+id/radio_normal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/difficulty_medium" />
+                android:text="@string/difficulty_normal" />
 
             <RadioButton
                 android:id="@+id/radio_hard"
