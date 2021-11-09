@@ -20,7 +20,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginTop="300dp"
             android:text="단어장을 추가해주세요"
             android:textSize="25dp" />
 

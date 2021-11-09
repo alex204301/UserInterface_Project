@@ -15,6 +15,7 @@ public class Tab3Fragment extends Fragment {
                              Bundle savedInstanceState) {
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle("스케줄 메뉴");
+        actionBar.setDisplayHomeAsUpEnabled(false);
         return inflater.inflate(R.layout.fragment_tab3, container, false);
     }
 }

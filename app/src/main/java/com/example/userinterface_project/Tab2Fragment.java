@@ -21,6 +21,7 @@ public class Tab2Fragment extends Fragment {
                              Bundle savedInstanceState) {
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle("단어장 선택");
+        actionBar.setDisplayHomeAsUpEnabled(false);
         return inflater.inflate(R.layout.fragment_tab2, container, false);
     }
 }

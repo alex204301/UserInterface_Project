@@ -28,6 +28,7 @@ public class Tab1Fragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tab1, container,false);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle("단어장");
+        actionBar.setDisplayHomeAsUpEnabled(false);
         Button testBtn = rootView.findViewById(R.id.test_btn);
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override

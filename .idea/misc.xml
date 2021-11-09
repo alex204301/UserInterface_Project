@@ -7,31 +7,14 @@
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/menu_selector_color.xml" value="0.2625" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_add_word.xml" value="0.25" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_word_list.xml" value="0.16259057971014493" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab1.xml" value="0.1" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab2.xml" value="0.2" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab3.xml" value="0.11980749746707194" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_word_list.xml" value="0.1" />
+        <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/layout_empty_word_list.xml" value="0.16259057971014493" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/tab1_dialog.xml" value="0.10077519379844961" />
         <entry key="..\:/Users/alex2/AndroidStudioProjects/UserInterface_Project/app/src/main/res/menu/bottom_menu.xml" value="0.20555555555555555" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26979166666666665" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.26979166666666665" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.14322916666666666" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26979166666666665" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/menu_selector_color.xml" value="0.26979166666666665" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_add_word.xml" value="0.1793478260869565" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_word_list.xml" value="0.2509057971014493" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/content_word_list.xml" value="0.24682971014492755" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_dashboard.xml" value="0.2509057971014493" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_first.xml" value="0.24682971014492755" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_home.xml" value="0.2509057971014493" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_notifications.xml" value="0.2509057971014493" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_second.xml" value="0.24682971014492755" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab1.xml" value="0.1793478260869565" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab2.xml" value="0.2509057971014493" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab3.xml" value="0.24230072463768115" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/layout_empty_word_list.xml" value="0.12708333333333333" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/tab1_dialog.xml" value="0.1265625" />
       </map>
     </option>
   </component>
