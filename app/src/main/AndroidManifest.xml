@@ -16,7 +16,7 @@
             android:label="@string/title_add_word" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:label="단어장"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

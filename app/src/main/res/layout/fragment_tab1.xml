@@ -9,20 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- TODO: Update blank fragment layout -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/cardview_dark_background">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="단어장"
-                android:textSize="20dp"
-                android:textColor="@color/white"
-                android:layout_marginLeft="15dp"
-                android:gravity="center"/>
-        </RelativeLayout>
+        <Button
+            android:id="@+id/test_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="화면 2" />
 
         <TextView
             android:layout_width="wrap_content"
