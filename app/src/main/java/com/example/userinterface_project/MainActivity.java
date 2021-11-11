@@ -30,7 +30,10 @@ public class MainActivity extends AppCompatActivity{
         tab2Fragment = new Tab2Fragment();
         tab3Fragment = new Tab3Fragment();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, tab1Fragment).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, tab1Fragment).commit();
+        }
         BottomNavigationView bottom_menu = findViewById(R.id.bottom_menu);
         bottom_menu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener(){
 
@@ -38,13 +41,13 @@ public class MainActivity extends AppCompatActivity{
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.first_tab:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, tab1Fragment).commit();
+                        replaceFragment(tab1Fragment);
                         return true;
                     case R.id.second_tab:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, tab2Fragment).commit();
+                        replaceFragment(tab2Fragment);
                         return true;
                     case R.id.third_tab:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, tab3Fragment).commit();
+                        replaceFragment(tab3Fragment);
                         return true;
                 }
                 return false;
@@ -54,7 +57,18 @@ public class MainActivity extends AppCompatActivity{
 
     public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment).commit();
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment).commit();
+    }
+
+    public void showWordList(long noteId) {
+        getSupportFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.container, WordListFragment.newInstance(noteId))
+                .addToBackStack(null)
+                .setReorderingAllowed(true)
+                .commit();
     }
 }

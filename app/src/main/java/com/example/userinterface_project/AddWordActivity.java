@@ -16,14 +16,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.example.userinterface_project.db.Note;
+import com.example.userinterface_project.db.Word;
+import com.example.userinterface_project.db.WordDbHelper;
+
 public class AddWordActivity extends AppCompatActivity {
+
+    public static final String EXTRA_NOTE_ID = "noteId";
 
     private EditText editWord;
     private EditText editMeaning;
-
     private RadioGroup radioGroup;
-
     private Button buttonAdd;
+
+    private long noteId;
+
+    private WordDbHelper dbHelper = WordDbHelper.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +70,13 @@ public class AddWordActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            noteId = getIntent().getLongExtra(EXTRA_NOTE_ID, -1);
+            Note note = dbHelper.getNote(noteId);
+            actionBar.setSubtitle(note.getName());
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        buttonAdd.setOnClickListener(v -> onAddButtonClick());
     }
 
     /**
@@ -95,6 +108,25 @@ public class AddWordActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void onAddButtonClick() {
+        int difficulty;
+        int checked = radioGroup.getCheckedRadioButtonId();
+
+        if (checked == R.id.radio_easy)
+            difficulty = Word.DIFFICULTY_EASY;
+        else if (checked == R.id.radio_normal)
+            difficulty = Word.DIFFICULTY_NORMAL;
+        else
+            difficulty = Word.DIFFICULTY_HARD;
+
+        dbHelper.addWord(noteId, editWord.getText().toString(),
+                editMeaning.getText().toString(),
+                difficulty);
+
+        setResult(RESULT_OK);
+        finish();
     }
 
     public static class ExitDialogFragment extends AppCompatDialogFragment {

@@ -17,4 +17,7 @@
 
     <string name="confirm_message">저장하지 않고 나가시겠습니까?</string>
     <string name="exit">나가기</string>
+
+    <string name="last_studied">최근 학습일: %s</string>
+    <string name="count">맞은 횟수: %d / 틀린 횟수: %d</string>
 </resources>

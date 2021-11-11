@@ -1,40 +1,67 @@
 package com.example.userinterface_project;
 
-import android.content.ComponentName;
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.userinterface_project.db.Word;
+import com.example.userinterface_project.db.WordDbHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class WordListFragment extends Fragment {
+import java.util.List;
 
-    public static WordListFragment newInstance() {
-        return new WordListFragment();
+public class WordListFragment extends Fragment {
+    public static final String NOTE_ID = "noteId";
+
+    private RecyclerView recyclerView;
+    private TextView emptyText;
+
+    private long noteId;
+
+    private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // 새 단어를 추가한 후 다시 이 화면으로 돌아왔을 때 목록 새로 고침
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    refreshList();
+                }
+            }
+    );
+
+    public static WordListFragment newInstance(long noteId) {
+        WordListFragment wordListFragment = new WordListFragment();
+        Bundle args = new Bundle();
+        args.putLong(NOTE_ID, noteId);
+        wordListFragment.setArguments(args);
+        return wordListFragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_word_list, container,false);
+        WordDbHelper dbHelper = WordDbHelper.getInstance(getContext());
 
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
-        actionBar.setTitle("단어장_이름1");
+        noteId = requireArguments().getLong(NOTE_ID);
+        actionBar.setTitle(dbHelper.getNote(noteId).getName());
         actionBar.setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
 
@@ -43,9 +70,20 @@ public class WordListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent((MainActivity)getActivity(), AddWordActivity.class);
-                startActivity(intent);
+                intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
+                resultLauncher.launch(intent);
             }
         });
+
+        recyclerView = rootView.findViewById(R.id.recycler_view);
+        emptyText = rootView.findViewById(R.id.empty_text);
+
+        // divider 추가
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
+
+        refreshList();
+
         return rootView;
     }
 
@@ -58,12 +96,118 @@ public class WordListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            ((MainActivity)getActivity()).replaceFragment(Tab1Fragment.newInstance());
+            requireActivity().getSupportFragmentManager().popBackStack();
             return true;
         }else if(item.getItemId() == R.id.menu1) {
             Intent intent = new Intent((MainActivity)getActivity(), FilterActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * DB에서 목록을 읽은 후 화면 새로 고침
+     */
+    private void refreshList() {
+        WordListAdapter adapter = (WordListAdapter) recyclerView.getAdapter();
+        if (adapter == null) {
+            adapter = new WordListAdapter();
+            recyclerView.setAdapter(adapter);
+        }
+        List<Word> list = WordDbHelper.getInstance(getContext()).getWordList(noteId);
+        adapter.changeList(list);
+
+        if (list.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyText.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyText.setVisibility(View.GONE);
+        }
+    }
+
+    // 리사이클러뷰 어댑터
+    private static class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.ViewHolder> {
+        List<Word> list;
+        private Context context;
+
+        private WordListAdapter() {
+            setHasStableIds(true);
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            context = parent.getContext();
+            View v = LayoutInflater.from(context).inflate(
+                    R.layout.word_list_item, parent, false
+            );
+
+            return new ViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            Word word = list.get(position);
+
+            holder.text1.setText(word.getWord());
+            holder.text2.setText(word.getMeaning());
+            holder.text3.setText(context.getString(R.string.count,
+                    word.getCountCorrect(), word.getCountIncorrect()));
+
+            int difficultyText = -1;
+            int difficultyColor = -1;
+            switch (word.getDifficulty()) {
+                case Word.DIFFICULTY_EASY:
+                    difficultyText = R.string.difficulty_easy;
+                    difficultyColor = R.color.difficulty_easy;
+                    break;
+                case Word.DIFFICULTY_NORMAL:
+                    difficultyText = R.string.difficulty_normal;
+                    difficultyColor = R.color.difficulty_normal;
+                    break;
+                case Word.DIFFICULTY_HARD:
+                    difficultyText = R.string.difficulty_hard;
+                    difficultyColor = R.color.difficulty_hard;
+                    break;
+            }
+
+            holder.badge.setText(context.getString(difficultyText));
+            holder.badge.setBackgroundTintList(
+                    AppCompatResources.getColorStateList(context, difficultyColor));
+        }
+
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return list.get(position).getId();
+        }
+
+        /**
+         * 화면에 보이는 리스트 변경
+         */
+        public void changeList(@NonNull List<Word> list) {
+            this.list = list;
+            notifyDataSetChanged();
+        }
+
+        private static class ViewHolder extends RecyclerView.ViewHolder {
+            TextView text1;
+            TextView text2;
+            TextView text3;
+            TextView badge;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                text1 = itemView.findViewById(R.id.text1);
+                text2 = itemView.findViewById(R.id.text2);
+                text3 = itemView.findViewById(R.id.text3);
+                badge = itemView.findViewById(R.id.badge);
+            }
+        }
     }
 }
