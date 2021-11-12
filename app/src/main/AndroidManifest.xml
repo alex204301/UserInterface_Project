@@ -10,7 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UserInterface_Project">
-        <activity android:name=".FilterActivity"
+        <activity
+            android:name=".ModifyWordActivity"
+            android:label="단어 수정/삭제"
+            android:exported="false" />
+        <activity
+            android:name=".FilterActivity"
             android:exported="true" />
         <activity
             android:name=".AddWordActivity"

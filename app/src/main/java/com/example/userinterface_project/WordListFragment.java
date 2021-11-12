@@ -127,7 +127,7 @@ public class WordListFragment extends Fragment {
     }
 
     // 리사이클러뷰 어댑터
-    private static class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.ViewHolder> {
+    private class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.ViewHolder> {
         List<Word> list;
         private Context context;
 
@@ -175,6 +175,16 @@ public class WordListFragment extends Fragment {
             holder.badge.setText(context.getString(difficultyText));
             holder.badge.setBackgroundTintList(
                     AppCompatResources.getColorStateList(context, difficultyColor));
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent((MainActivity)getActivity(), ModifyWordActivity.class);
+                    intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
+                    intent.putExtra("ItemPosition", position);
+                    resultLauncher.launch(intent);;
+                }
+            });
         }
 
         @Override
@@ -195,7 +205,7 @@ public class WordListFragment extends Fragment {
             notifyDataSetChanged();
         }
 
-        private static class ViewHolder extends RecyclerView.ViewHolder {
+        private class ViewHolder extends RecyclerView.ViewHolder {
             TextView text1;
             TextView text2;
             TextView text3;
