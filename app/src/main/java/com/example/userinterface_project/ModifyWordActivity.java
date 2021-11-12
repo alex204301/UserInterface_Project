@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import com.example.userinterface_project.db.Note;
 import com.example.userinterface_project.db.Word;
 import com.example.userinterface_project.db.WordDbHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -29,12 +32,13 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
     public static final String EXTRA_NOTE_ID = "noteId";
     private long noteId;
     private long wordId;
+    private Word word;
 
     private EditText editWord;
     private EditText editMeaning;
     private RadioGroup radioGroup;
     private Button modifyBtn;
-    private Word word;
+    private FloatingActionButton delBtn;
 
     private WordDbHelper dbHelper = WordDbHelper.getInstance(this);
 
@@ -42,6 +46,12 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_word);
+
+        editWord = findViewById(R.id.edit_word);
+        editMeaning= findViewById(R.id.edit_meaning);
+        radioGroup = findViewById(R.id.radio_group_difficulty);
+        modifyBtn = findViewById(R.id.button_modify);
+        delBtn = findViewById(R.id.delete_word_btn);
 
         ActionBar actionBar = getSupportActionBar();
         noteId = getIntent().getLongExtra(EXTRA_NOTE_ID, -1);
@@ -54,11 +64,8 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
         word = list.get(position);
         wordId = word.getId();
 
-        editWord = findViewById(R.id.edit_word);
         editWord.setText(word.getWord());
-        editMeaning= findViewById(R.id.edit_meaning);
         editMeaning.setText(word.getMeaning());
-        radioGroup = findViewById(R.id.radio_group_difficulty);
         switch (word.getDifficulty()) {
             case Word.DIFFICULTY_EASY:
                 radioGroup.check(R.id.radio_easy);
@@ -71,8 +78,25 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
 
-        modifyBtn = findViewById(R.id.button_modify);
         modifyBtn.setOnClickListener(this);
+        delBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setMessage("정말 단어를 삭제하시겠습니까?")
+                        .setNegativeButton("취소", null)
+                        .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dbHelper.deleteWord(wordId);
+                                setResult(RESULT_OK);
+
+                                finish();
+                            }
+                        })
+                        .show();
+            }
+        });
     }
 
     @Override
