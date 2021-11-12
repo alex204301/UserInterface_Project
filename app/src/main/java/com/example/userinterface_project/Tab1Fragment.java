@@ -69,7 +69,7 @@ public class Tab1Fragment extends Fragment {
     /**
      * DB에서 목록을 읽은 후 화면 새로 고침
      */
-    private void refreshList() {
+    public void refreshList() {
         NoteListAdapter adapter = (NoteListAdapter) recyclerView.getAdapter();
         if (adapter == null) {
             adapter = new NoteListAdapter();
@@ -144,6 +144,26 @@ public class Tab1Fragment extends Fragment {
                 itemView.setOnClickListener(v -> {
                     MainActivity activity = (MainActivity) itemView.getContext();
                     activity.showWordList(getItemId());
+                });
+
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setMessage("선택한 단어장을 삭제하시겠습니까?")
+                                .setNegativeButton("취소", null)
+                                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        WordDbHelper dbHelper = WordDbHelper.getInstance(v.getContext());
+                                        dbHelper.removeNote(getItemId());
+                                        MainActivity activity = (MainActivity) itemView.getContext();
+                                        activity.replaceFragment(new Tab1Fragment());
+                                    }
+                                })
+                                .show();
+                        return false;
+                    }
                 });
             }
         }
