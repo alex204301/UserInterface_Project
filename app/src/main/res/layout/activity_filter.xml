@@ -22,6 +22,7 @@
             android:textSize="20dp"/>
 
         <RadioGroup
+            android:id="@+id/radio_group_difficulty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -30,24 +31,28 @@
             android:layout_marginLeft="10dp">
 
             <RadioButton
+                android:id="@+id/radio_recent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="최근 추가순 "
                 android:layoutDirection="rtl"/>
 
             <RadioButton
+                android:id="@+id/radio_ascend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="오름차순(A-Z)"
                 android:layoutDirection="rtl"/>
 
             <RadioButton
+                android:id="@+id/radio_descend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="내림차순(Z-A)"
                 android:layoutDirection="rtl"/>
 
             <RadioButton
+                android:id="@+id/radio_wrong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="많이 틀린 순"
@@ -72,38 +77,49 @@
             android:showDividers="middle">
 
             <CheckBox
+                android:id="@+id/checkbox_easy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="쉬움"
-                android:layoutDirection="rtl"/>
+                android:layoutDirection="rtl"
+                android:checked="true"/>
 
             <CheckBox
+                android:id="@+id/checkbox_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="보통"
-                android:layoutDirection="rtl"/>
+                android:layoutDirection="rtl"
+                android:checked="true"/>
 
             <CheckBox
+                android:id="@+id/checkbox_hard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="어려움"
-                android:layoutDirection="rtl"/>
+                android:layoutDirection="rtl"
+                android:checked="true"/>
 
             <CheckBox
+                android:id="@+id/checkbox_word"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="단어"
-                android:layoutDirection="rtl"/>
+                android:layoutDirection="rtl"
+                android:checked="true"/>
 
             <CheckBox
+                android:id="@+id/checkbox_meaning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="뜻"
-                android:layoutDirection="rtl"/>
+                android:layoutDirection="rtl"
+                android:checked="true"/>
 
         </LinearLayout>
 
         <Button
+            android:id="@+id/button_apply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
