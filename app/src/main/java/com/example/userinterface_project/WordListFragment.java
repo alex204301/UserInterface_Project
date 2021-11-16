@@ -148,17 +148,17 @@ public class WordListFragment extends Fragment {
 
         //필터
         if(!showEasy)
-            for(int i = 0; i<list.size(); i++)
+            for(int i = list.size() - 1; i >= 0; i--)
                 if(list.get(i).getDifficulty() == Word.DIFFICULTY_EASY) {
                     list.remove(i);
                 }
         if(!showNormal)
-            for(int i = 0; i<list.size(); i++)
+            for(int i = list.size() - 1; i >= 0; i--)
                 if(list.get(i).getDifficulty() == Word.DIFFICULTY_NORMAL) {
                     list.remove(i);
                 }
         if(!showHard)
-            for(int i = 0; i<list.size(); i++)
+            for(int i = list.size() - 1; i >= 0; i--)
                 if(list.get(i).getDifficulty() == Word.DIFFICULTY_HARD) {
                     list.remove(i);
                 }
@@ -269,11 +269,12 @@ public class WordListFragment extends Fragment {
                     AppCompatResources.getColorStateList(context, difficultyColor));
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent((MainActivity)getActivity(), ModifyWordActivity.class);
                     intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
-                    intent.putExtra("ItemPosition", position);
+                    intent.putExtra("wordId", list.get(holder.getAdapterPosition()).getId());
                     resultLauncher.launch(intent);
                 }
             });

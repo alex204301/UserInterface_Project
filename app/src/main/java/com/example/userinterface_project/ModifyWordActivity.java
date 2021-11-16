@@ -31,7 +31,7 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
 
     public static final String EXTRA_NOTE_ID = "noteId";
     private long noteId;
-    private long wordId;
+    private int wordId;
     private Word word;
 
     private EditText editWord;
@@ -60,9 +60,13 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         List<Word> list = WordDbHelper.getInstance(this).getWordList(noteId);
-        int position = getIntent().getIntExtra("ItemPosition", -1);
+        wordId = getIntent().getIntExtra("wordId", -1);
+        int position = 0;
+        for(int i = 0; i < list.size(); i++) {
+            if(list.get(i).getId() == wordId)
+                position = i;
+        }
         word = list.get(position);
-        wordId = word.getId();
 
         editWord.setText(word.getWord());
         editMeaning.setText(word.getMeaning());
