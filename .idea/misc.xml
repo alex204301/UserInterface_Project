@@ -23,7 +23,7 @@
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/drawable/menu_selector_color.xml" value="0.26979166666666665" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_add_word.xml" value="0.1793478260869565" />
-        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_filter.xml" value="0.1" />
+        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_filter.xml" value="0.4" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_modify_word.xml" value="0.2115036231884058" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/activity_word_list.xml" value="0.2509057971014493" />
@@ -38,6 +38,7 @@
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_tab3.xml" value="0.24230072463768115" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/fragment_word_list.xml" value="0.23097826086956522" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/layout_empty_word_list.xml" value="0.1" />
+        <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/note_list_item.xml" value="0.20244565217391305" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/tab1_dialog.xml" value="0.1265625" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/layout/word_list_item.xml" value="0.2115036231884058" />
         <entry key="..\:/Users/hwk06/AndroidStudioProjects/UserInterface_Project/app/src/main/res/menu/bottom_menu.xml" value="0.25364583333333335" />

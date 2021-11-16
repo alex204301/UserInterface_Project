@@ -3,7 +3,7 @@ package com.example.userinterface_project;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ComponentName;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -21,7 +21,6 @@ public class FilterActivity extends AppCompatActivity implements CompoundButton.
     private CheckBox checkBoxHard;
     private CheckBox checkBoxWord;
     private CheckBox checkBoxMeaning;
-    private Button buttonApply;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +32,20 @@ public class FilterActivity extends AppCompatActivity implements CompoundButton.
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("단어장 메뉴");
 
-        radioGroup = findViewById(R.id.radio_group_difficulty);
+        radioGroup = findViewById(R.id.radio_group_sorting);
         checkBoxEasy = findViewById(R.id.checkbox_easy);
         checkBoxNormal = findViewById(R.id.checkbox_normal);
         checkBoxHard = findViewById(R.id.checkbox_hard);
         checkBoxWord = findViewById(R.id.checkbox_word);
         checkBoxMeaning = findViewById(R.id.checkbox_meaning);
-        buttonApply = findViewById(R.id.button_apply);
+        Button buttonApply = findViewById(R.id.button_apply);
 
-        if (savedInstanceState == null) {
-            radioGroup.check(R.id.radio_recent);
-        } // 첫 실행 시 기본값으로 최근 등록 순 선택
+        radioGroup.check(radioGroup.getChildAt(getIntent().getIntExtra("sortBy", 0)).getId());
+        checkBoxEasy.setChecked(getIntent().getBooleanExtra("showEasy", true));
+        checkBoxNormal.setChecked(getIntent().getBooleanExtra("showNormal", true));
+        checkBoxHard.setChecked(getIntent().getBooleanExtra("showHard", true));
+        checkBoxWord.setChecked(getIntent().getBooleanExtra("showWord", true));
+        checkBoxMeaning.setChecked(getIntent().getBooleanExtra("showMeaning", true));
 
         checkBoxEasy.setOnCheckedChangeListener(this);
         checkBoxNormal.setOnCheckedChangeListener(this);
@@ -73,6 +75,15 @@ public class FilterActivity extends AppCompatActivity implements CompoundButton.
 
     @Override
     public void onClick(View v) {
-
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("sortBy",
+                radioGroup.indexOfChild(radioGroup.findViewById(radioGroup.getCheckedRadioButtonId())));
+        returnIntent.putExtra("showEasy", checkBoxEasy.isChecked());
+        returnIntent.putExtra("showNormal", checkBoxNormal.isChecked());
+        returnIntent.putExtra("showHard", checkBoxHard.isChecked());
+        returnIntent.putExtra("showWord", checkBoxWord.isChecked());
+        returnIntent.putExtra("showMeaning", checkBoxMeaning.isChecked());
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

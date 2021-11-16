@@ -22,7 +22,7 @@
             android:textSize="20dp"/>
 
         <RadioGroup
-            android:id="@+id/radio_group_difficulty"
+            android:id="@+id/radio_group_sorting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -31,10 +31,17 @@
             android:layout_marginLeft="10dp">
 
             <RadioButton
+                android:id="@+id/radio_default"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="등록순"
+                android:layoutDirection="rtl"/>
+
+            <RadioButton
                 android:id="@+id/radio_recent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="최근 추가순 "
+                android:text="최근 등록순"
                 android:layoutDirection="rtl"/>
 
             <RadioButton

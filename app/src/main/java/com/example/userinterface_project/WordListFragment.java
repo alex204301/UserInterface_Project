@@ -25,6 +25,8 @@ import com.example.userinterface_project.db.Word;
 import com.example.userinterface_project.db.WordDbHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class WordListFragment extends Fragment {
@@ -35,11 +37,26 @@ public class WordListFragment extends Fragment {
 
     private long noteId;
 
+    private int sortBy; //0:등록순  1:최근 등록순  2:A-Z  3:Z-A  4:많이 틀린 순
+    private boolean showEasy;
+    private boolean showNormal;
+    private boolean showHard;
+    private boolean showWord;
+    private boolean showMeaning;
+
     private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                // 새 단어를 추가한 후 다시 이 화면으로 돌아왔을 때 목록 새로 고침
+                //다시 이 화면으로 돌아왔을 때 목록 새로 고침
                 if (result.getResultCode() == Activity.RESULT_OK) {
+                    if(result.getData() != null) { //정렬필터 화면에서 데이터 받아옴
+                        sortBy = result.getData().getIntExtra("sortBy", 0);
+                        showEasy = result.getData().getBooleanExtra("showEasy", true);
+                        showNormal = result.getData().getBooleanExtra("showNormal", true);
+                        showHard = result.getData().getBooleanExtra("showHard", true);
+                        showWord = result.getData().getBooleanExtra("showWord", true);
+                        showMeaning = result.getData().getBooleanExtra("showMeaning", true);
+                    }
                     refreshList();
                 }
             }
@@ -64,6 +81,13 @@ public class WordListFragment extends Fragment {
         actionBar.setTitle(dbHelper.getNote(noteId).getName());
         actionBar.setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
+
+        sortBy = 0;
+        showEasy = true;
+        showNormal = true;
+        showHard = true;
+        showWord = true;
+        showMeaning = true;
 
         FloatingActionButton fab = rootView.findViewById(R.id.tab1_plus_btn);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +124,13 @@ public class WordListFragment extends Fragment {
             return true;
         }else if(item.getItemId() == R.id.menu1) {
             Intent intent = new Intent((MainActivity)getActivity(), FilterActivity.class);
-            startActivity(intent);
+            intent.putExtra("sortBy", sortBy);
+            intent.putExtra("showEasy", showEasy);
+            intent.putExtra("showNormal", showNormal);
+            intent.putExtra("showHard", showHard);
+            intent.putExtra("showWord", showWord);
+            intent.putExtra("showMeaning", showMeaning);
+            resultLauncher.launch(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -115,6 +145,58 @@ public class WordListFragment extends Fragment {
             recyclerView.setAdapter(adapter);
         }
         List<Word> list = WordDbHelper.getInstance(getContext()).getWordList(noteId);
+
+        //필터
+        if(!showEasy)
+            for(int i = 0; i<list.size(); i++)
+                if(list.get(i).getDifficulty() == Word.DIFFICULTY_EASY) {
+                    list.remove(i);
+                }
+        if(!showNormal)
+            for(int i = 0; i<list.size(); i++)
+                if(list.get(i).getDifficulty() == Word.DIFFICULTY_NORMAL) {
+                    list.remove(i);
+                }
+        if(!showHard)
+            for(int i = 0; i<list.size(); i++)
+                if(list.get(i).getDifficulty() == Word.DIFFICULTY_HARD) {
+                    list.remove(i);
+                }
+        //정렬
+        switch (sortBy) {
+            case 1 :
+                Collections.reverse(list);
+                break;
+            case 2:
+                Comparator<Word> wordAsc = new Comparator<Word>() {
+                    @Override
+                    public int compare(Word o1, Word o2) {
+                        return o1.getWord().compareTo(o2.getWord());
+                    }
+                };
+                Collections.sort(list, wordAsc);
+                break;
+            case 3:
+                Comparator<Word> wordDsc = new Comparator<Word>() {
+                    @Override
+                    public int compare(Word o1, Word o2) {
+                        return o2.getWord().compareTo(o1.getWord());
+                    }
+                };
+                Collections.sort(list, wordDsc);
+                break;
+            case 4:
+                Comparator<Word> countIncorrectDsc = new Comparator<Word>() {
+                    @Override
+                    public int compare(Word o1, Word o2) {
+                        return o2.getCountIncorrect() - o1.getCountIncorrect();
+                    }
+                };
+                Collections.sort(list, countIncorrectDsc);
+                break;
+        }
+
+
         adapter.changeList(list);
 
         if (list.isEmpty()) {
@@ -155,6 +237,16 @@ public class WordListFragment extends Fragment {
             holder.text3.setText(context.getString(R.string.count,
                     word.getCountCorrect(), word.getCountIncorrect()));
 
+            //단어,뜻 가리기
+            if(!showWord)
+                holder.text1.setVisibility(View.INVISIBLE);
+            else
+                holder.text1.setVisibility(View.VISIBLE);
+            if(!showMeaning)
+                holder.text2.setVisibility(View.INVISIBLE);
+            else
+                holder.text2.setVisibility(View.VISIBLE);
+
             int difficultyText = -1;
             int difficultyColor = -1;
             switch (word.getDifficulty()) {
@@ -182,7 +274,7 @@ public class WordListFragment extends Fragment {
                     Intent intent = new Intent((MainActivity)getActivity(), ModifyWordActivity.class);
                     intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
                     intent.putExtra("ItemPosition", position);
-                    resultLauncher.launch(intent);;
+                    resultLauncher.launch(intent);
                 }
             });
         }
