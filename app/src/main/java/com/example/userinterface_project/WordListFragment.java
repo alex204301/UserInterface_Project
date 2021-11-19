@@ -196,7 +196,6 @@ public class WordListFragment extends Fragment {
                 break;
         }
 
-
         adapter.changeList(list);
 
         if (list.isEmpty()) {
