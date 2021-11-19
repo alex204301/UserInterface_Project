@@ -268,13 +268,38 @@ public class WordListFragment extends Fragment {
                     AppCompatResources.getColorStateList(context, difficultyColor));
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
-
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent((MainActivity)getActivity(), ModifyWordActivity.class);
-                    intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
-                    intent.putExtra("wordId", list.get(holder.getAdapterPosition()).getId());
-                    resultLauncher.launch(intent);
+                public void onClick(View v) {//단어,뜻 가리기 기능 사용 시 짧게 클릭하면 가려졌던게 보이는 일 수행
+                    if(!showWord) {          //                        길게 클릭하면 수정화면으로 넘어감
+                        if(holder.text1.getVisibility()==View.INVISIBLE)
+                            holder.text1.setVisibility(View.VISIBLE);
+                        else
+                            holder.text1.setVisibility(View.INVISIBLE);
+                    }
+                    else if(!showMeaning) {
+                        if(holder.text2.getVisibility()==View.INVISIBLE)
+                            holder.text2.setVisibility(View.VISIBLE);
+                        else
+                            holder.text2.setVisibility(View.INVISIBLE);
+                    }
+                    else {//단어,뜻 가리기 기능 사용 안 할 때만 수정화면으로 넘어감
+                        Intent intent = new Intent((MainActivity) getActivity(), ModifyWordActivity.class);
+                        intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
+                        intent.putExtra("wordId", list.get(holder.getAdapterPosition()).getId());
+                        resultLauncher.launch(intent);
+                    }
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(!showWord||!showMeaning){
+                        Intent intent = new Intent((MainActivity) getActivity(), ModifyWordActivity.class);
+                        intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
+                        intent.putExtra("wordId", list.get(holder.getAdapterPosition()).getId());
+                        resultLauncher.launch(intent);
+                    }
+                    return false;
                 }
             });
         }

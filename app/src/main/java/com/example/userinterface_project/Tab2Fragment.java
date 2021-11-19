@@ -123,7 +123,7 @@ public class Tab2Fragment extends Fragment {
                 text1 = itemView.findViewById(R.id.text1);
                 text2 = itemView.findViewById(R.id.text2);
 
-                itemView.setOnClickListener(v -> {
+                itemView.setOnClickListener(v -> {//단어장 선택됐을 때
 //                    Intent intent = new Intent((MainActivity)getActivity(), SelectQuizTypeActivity.class);
 //                    intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, getItemId()); // note id 전달
 //                    startActivity(intent);
