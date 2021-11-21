@@ -1,37 +1,26 @@
 package com.example.userinterface_project;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
-
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.userinterface_project.db.Note;
 import com.example.userinterface_project.db.Word;
 import com.example.userinterface_project.db.WordDbHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.List;
-
 public class ModifyWordActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String EXTRA_NOTE_ID = "noteId";
-    private long noteId;
-    private int wordId;
+    public static final String EXTRA_WORD_ID = "wordId";
     private Word word;
 
     private EditText editWord;
@@ -53,20 +42,13 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
         modifyBtn = findViewById(R.id.button_modify);
         delBtn = findViewById(R.id.delete_word_btn);
 
+        long wordId = getIntent().getLongExtra(EXTRA_WORD_ID, -1);
+        word = dbHelper.getWordById(wordId);
+
         ActionBar actionBar = getSupportActionBar();
-        noteId = getIntent().getLongExtra(EXTRA_NOTE_ID, -1);
-        Note note = dbHelper.getNote(noteId);
+        Note note = dbHelper.getNote(word.getNoteId());
         actionBar.setSubtitle(note.getName());
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        List<Word> list = WordDbHelper.getInstance(this).getWordList(noteId);
-        wordId = getIntent().getIntExtra("wordId", -1);
-        int position = 0;
-        for(int i = 0; i < list.size(); i++) {
-            if(list.get(i).getId() == wordId)
-                position = i;
-        }
-        word = list.get(position);
 
         editWord.setText(word.getWord());
         editMeaning.setText(word.getMeaning());
@@ -124,7 +106,7 @@ public class ModifyWordActivity extends AppCompatActivity implements View.OnClic
         else
             difficulty = Word.DIFFICULTY_HARD;
 
-        dbHelper.editWord(wordId, editWord.getText().toString(),
+        dbHelper.editWord(word.getId(), editWord.getText().toString(),
                 editMeaning.getText().toString(),
                 difficulty);
 

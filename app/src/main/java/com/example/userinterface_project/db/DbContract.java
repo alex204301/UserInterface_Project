@@ -14,10 +14,10 @@ public class DbContract {
         public static final String TABLE_NAME = "words";
 
         public static final String COLUMN_NOTE_ID = "note_id";
-        public static final String COLUMN_NAME_WORD = "word";
-        public static final String COLUMN_NAME_MEANING = "meaning";
+        public static final String COLUMN_WORD = "word";
+        public static final String COLUMN_MEANING = "meaning";
         public static final String COLUMN_COUNT_CORRECT = "correct_count";
         public static final String COLUMN_COUNT_INCORRECT = "incorrect_count";
-        public static final String COLUMN_COUNT_DIFFICULTY = "difficulty";
+        public static final String COLUMN_DIFFICULTY = "difficulty";
     }
 }

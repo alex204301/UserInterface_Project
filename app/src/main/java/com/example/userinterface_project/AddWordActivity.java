@@ -23,15 +23,12 @@ import com.example.userinterface_project.db.WordDbHelper;
 public class AddWordActivity extends AppCompatActivity {
 
     public static final String EXTRA_NOTE_ID = "noteId";
-
+    private final WordDbHelper dbHelper = WordDbHelper.getInstance(this);
     private EditText editWord;
     private EditText editMeaning;
     private RadioGroup radioGroup;
     private Button buttonAdd;
-
     private long noteId;
-
-    private WordDbHelper dbHelper = WordDbHelper.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +39,6 @@ public class AddWordActivity extends AppCompatActivity {
         editMeaning = findViewById(R.id.edit_meaning);
         radioGroup = findViewById(R.id.radio_group_difficulty);
         buttonAdd = findViewById(R.id.button_add);
-
-        if (savedInstanceState == null) {
-            radioGroup.check(R.id.radio_hard);
-        } // 첫 실행 시 기본값으로 난이도 어려움 선택
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -94,7 +87,7 @@ public class AddWordActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -36,11 +36,11 @@ public class WordDbHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + DbContract.Words.TABLE_NAME + " (" +
                 DbContract.Words._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbContract.Words.COLUMN_NOTE_ID + " INTEGER, " +
-                DbContract.Words.COLUMN_NAME_WORD + " TEXT, " +
-                DbContract.Words.COLUMN_NAME_MEANING + " TEXT, " +
+                DbContract.Words.COLUMN_WORD + " TEXT, " +
+                DbContract.Words.COLUMN_MEANING + " TEXT, " +
                 DbContract.Words.COLUMN_COUNT_CORRECT + " INTEGER DEFAULT 0, " +
                 DbContract.Words.COLUMN_COUNT_INCORRECT + " INTEGER DEFAULT 0, " +
-                DbContract.Words.COLUMN_COUNT_DIFFICULTY + " INTEGER)"); // words(단어 목록) 테이블
+                DbContract.Words.COLUMN_DIFFICULTY + " INTEGER)"); // words(단어 목록) 테이블
     }
 
     @Override
@@ -90,7 +90,7 @@ public class WordDbHelper extends SQLiteOpenHelper {
     /**
      * 단어장 삭제
      */
-    public void removeNote(long noteId) {
+    public void deleteNote(long noteId) {
         SQLiteDatabase db = getWritableDatabase();
 
         db.delete(DbContract.Notes.TABLE_NAME, DbContract.Notes._ID + "=?",
@@ -130,7 +130,7 @@ public class WordDbHelper extends SQLiteOpenHelper {
         int columnLastStudied = cursor.getColumnIndex(DbContract.Notes.COLUMN_LAST_STUDIED);
         while (cursor.moveToNext()) {
             notes.add(new Note(
-                    cursor.getInt(columnId),
+                    cursor.getLong(columnId),
                     cursor.getString(columnTitle),
                     cursor.isNull(columnLastStudied) ? null
                             : new Date(cursor.getLong(columnLastStudied))
@@ -150,9 +150,9 @@ public class WordDbHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(DbContract.Words.COLUMN_NOTE_ID, noteId);
-        values.put(DbContract.Words.COLUMN_NAME_WORD, word);
-        values.put(DbContract.Words.COLUMN_NAME_MEANING, meaning);
-        values.put(DbContract.Words.COLUMN_COUNT_DIFFICULTY, difficulty);
+        values.put(DbContract.Words.COLUMN_WORD, word);
+        values.put(DbContract.Words.COLUMN_MEANING, meaning);
+        values.put(DbContract.Words.COLUMN_DIFFICULTY, difficulty);
 
         return db.insert(DbContract.Words.TABLE_NAME, null, values);
     }
@@ -164,9 +164,9 @@ public class WordDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DbContract.Words.COLUMN_NAME_WORD, word);
-        values.put(DbContract.Words.COLUMN_NAME_MEANING, meaning);
-        values.put(DbContract.Words.COLUMN_COUNT_DIFFICULTY, difficulty);
+        values.put(DbContract.Words.COLUMN_WORD, word);
+        values.put(DbContract.Words.COLUMN_MEANING, meaning);
+        values.put(DbContract.Words.COLUMN_DIFFICULTY, difficulty);
 
         db.update(DbContract.Words.TABLE_NAME, values, DbContract.Words._ID + "=?",
                 new String[]{String.valueOf(wordId)});
@@ -211,40 +211,60 @@ public class WordDbHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * wordId로 단어 불러오기
+     */
+    public Word getWordById(long wordId) {
+        return getWords(wordId, -1).get(0);
+    }
+
+    /**
      * 단어장에서 단어 목록 불러오기
      */
     public List<Word> getWordList(long noteId) {
+        return getWords(-1, noteId);
+    }
+
+    private List<Word> getWords(long wordId, long noteId) {
         SQLiteDatabase db = getReadableDatabase();
+
+        String selection;
+        String[] selectionArgs;
+        if (wordId != -1) {
+            selection = DbContract.Words._ID + "=?";
+            selectionArgs = new String[]{String.valueOf(wordId)};
+        } else {
+            selection = DbContract.Words.COLUMN_NOTE_ID + "=?";
+            selectionArgs = new String[]{String.valueOf(noteId)};
+        }
+
         Cursor cursor = db.query(
-                DbContract.Words.TABLE_NAME,
-                null,
-                DbContract.Words.COLUMN_NOTE_ID + "=?",
-                new String[]{String.valueOf(noteId)},
+                DbContract.Words.TABLE_NAME, null, selection, selectionArgs,
                 null, null, null
         );
 
         ArrayList<Word> words = new ArrayList<>(cursor.getCount());
 
         int columnId = cursor.getColumnIndex(DbContract.Words._ID);
-        int columnWord = cursor.getColumnIndex(DbContract.Words.COLUMN_NAME_WORD);
-        int columnMeaning = cursor.getColumnIndex(DbContract.Words.COLUMN_NAME_MEANING);
+        int columnWord = cursor.getColumnIndex(DbContract.Words.COLUMN_WORD);
+        int columnMeaning = cursor.getColumnIndex(DbContract.Words.COLUMN_MEANING);
         int columnCountCorrect = cursor.getColumnIndex(DbContract.Words.COLUMN_COUNT_CORRECT);
         int columnCountIncorrect = cursor.getColumnIndex(DbContract.Words.COLUMN_COUNT_INCORRECT);
-        int columnDifficulty = cursor.getColumnIndex(DbContract.Words.COLUMN_COUNT_DIFFICULTY);
+        int columnDifficulty = cursor.getColumnIndex(DbContract.Words.COLUMN_DIFFICULTY);
+        int columnNoteId = cursor.getColumnIndex(DbContract.Words.COLUMN_NOTE_ID);
 
         while (cursor.moveToNext()) {
             words.add(new Word(
-                    cursor.getInt(columnId),
+                    cursor.getLong(columnId),
                     cursor.getString(columnWord),
                     cursor.getString(columnMeaning),
                     cursor.getInt(columnCountCorrect),
                     cursor.getInt(columnCountIncorrect),
-                    cursor.getInt(columnDifficulty)
+                    cursor.getInt(columnDifficulty),
+                    cursor.getLong(columnNoteId)
             ));
         }
 
         cursor.close();
         return words;
     }
-
 }

@@ -156,7 +156,7 @@ public class Tab1Fragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         WordDbHelper dbHelper = WordDbHelper.getInstance(v.getContext());
-                                        dbHelper.removeNote(getItemId());
+                                        dbHelper.deleteNote(getItemId());
                                         MainActivity activity = (MainActivity) itemView.getContext();
                                         activity.replaceFragment(new Tab1Fragment());
                                     }

@@ -284,8 +284,7 @@ public class WordListFragment extends Fragment {
                     }
                     else {//단어,뜻 가리기 기능 사용 안 할 때만 수정화면으로 넘어감
                         Intent intent = new Intent((MainActivity) getActivity(), ModifyWordActivity.class);
-                        intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
-                        intent.putExtra("wordId", list.get(holder.getAdapterPosition()).getId());
+                        intent.putExtra(ModifyWordActivity.EXTRA_WORD_ID, holder.getItemId());
                         resultLauncher.launch(intent);
                     }
                 }
@@ -295,8 +294,7 @@ public class WordListFragment extends Fragment {
                 public boolean onLongClick(View v) {
                     if(!showWord||!showMeaning){
                         Intent intent = new Intent((MainActivity) getActivity(), ModifyWordActivity.class);
-                        intent.putExtra(AddWordActivity.EXTRA_NOTE_ID, noteId); // note id 전달
-                        intent.putExtra("wordId", list.get(holder.getAdapterPosition()).getId());
+                        intent.putExtra(ModifyWordActivity.EXTRA_WORD_ID, holder.getItemId());
                         resultLauncher.launch(intent);
                     }
                     return false;

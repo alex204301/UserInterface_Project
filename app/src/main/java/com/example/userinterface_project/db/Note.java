@@ -3,17 +3,17 @@ package com.example.userinterface_project.db;
 import java.util.Date;
 
 public final class Note {
-    private final int id;
+    private final long id;
     private final String name;
     private final Date lastStudied;
 
-    public Note(int id, String name, Date lastStudied) {
+    public Note(long id, String name, Date lastStudied) {
         this.id = id;
         this.name = name;
         this.lastStudied = lastStudied;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
