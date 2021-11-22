@@ -38,6 +38,7 @@ public class Tab1Fragment extends Fragment {
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("단어장");
         actionBar.setDisplayHomeAsUpEnabled(false);
+
         FloatingActionButton fab = rootView.findViewById(R.id.tab1_plus_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

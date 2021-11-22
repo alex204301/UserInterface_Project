@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectQuizFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="20dp"
+            android:text="단어/뜻 선택" />
+
+        <RadioGroup
+            android:id="@+id/radio_group_word"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_word"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="단어" />
+
+            <RadioButton
+                android:id="@+id/radio_meaning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="뜻" />
+
+        </RadioGroup>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="20dp"
+            android:text="@string/difficulty" />
+
+        <RadioGroup
+            android:id="@+id/radio_group_difficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radio_all"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="전체" />
+
+            <RadioButton
+                android:id="@+id/radio_easy"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/difficulty_easy" />
+
+            <RadioButton
+                android:id="@+id/radio_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/difficulty_normal" />
+
+            <RadioButton
+                android:id="@+id/radio_hard"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/difficulty_hard" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="20dp"
+            android:text="퀴즈 유형" />
+
+        <Button
+            android:id="@+id/button_type1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="주관식" />
+
+        <Button
+            android:id="@+id/button_type2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="객관식" />
+
+        <Button
+            android:id="@+id/button_type3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="스스로 확인" />
+
+    </LinearLayout>
+
+</FrameLayout>

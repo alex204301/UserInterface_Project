@@ -71,4 +71,13 @@ public class MainActivity extends AppCompatActivity{
                 .setReorderingAllowed(true)
                 .commit();
     }
+
+    public void showQuizSelect(long noteId) {
+        getSupportFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.container, SelectQuizFragment.newInstance(noteId))
+                .addToBackStack(null)
+                .setReorderingAllowed(true)
+                .commit();
+    }
 }
