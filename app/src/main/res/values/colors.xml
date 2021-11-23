@@ -11,4 +11,8 @@
     <color name="difficulty_easy">#4000FF00</color>
     <color name="difficulty_normal">#40FFAA00</color>
     <color name="difficulty_hard">#40FF0000</color>
+
+    <color name="choice_button_color">#555</color>
+    <color name="choice_button_color_correct">#27AE60</color>
+    <color name="choice_button_color_incorrect">#C0392B</color>
 </resources>

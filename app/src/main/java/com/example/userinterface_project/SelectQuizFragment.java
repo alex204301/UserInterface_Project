@@ -17,7 +17,7 @@ import android.widget.RadioGroup;
 import com.example.userinterface_project.db.WordDbHelper;
 
 
-public class SelectQuizFragment extends Fragment {
+public class SelectQuizFragment extends Fragment implements View.OnClickListener {
 
     public static final String NOTE_ID = "noteId";
     public static String Difficulty;
@@ -56,6 +56,16 @@ public class SelectQuizFragment extends Fragment {
         radioGroupDifficulty = rootView.findViewById(R.id.radio_group_difficulty);
         radioGroupWord = rootView.findViewById(R.id.radio_group_word);
 
+        // 퀴즈 유형에 따른 클릭 이벤트
+        btnType1.setOnClickListener(this);
+        btnType2.setOnClickListener(this);
+        btnType3.setOnClickListener(this);
+
+        return rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
         int checkedDifficulty = radioGroupDifficulty.getCheckedRadioButtonId();
         int checkedWord = radioGroupWord.getCheckedRadioButtonId();
 
@@ -79,36 +89,23 @@ public class SelectQuizFragment extends Fragment {
         else if (checkedWord == R.id.radio_meaning)
             WordMeaning = "meaning";
 
-        // 퀴즈 유형에 따른 클릭 이벤트
-        btnType1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent((MainActivity) getActivity(), 실행시킬 액티비티 이름);
-//                intent.putExtra("Difficulty", Difficulty);
-//                intent.putExtra("WordMeaning", WordMeaning);
-//                startActivity(intent);
-            }
-        });
-        btnType2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent((MainActivity) getActivity(), 실행시킬 액티비티 이름);
-//                intent.putExtra("Difficulty", Difficulty);
-//                intent.putExtra("WordMeaning", WordMeaning);
-//                startActivity(intent);
-            }
-        });
-        btnType3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent((MainActivity) getActivity(), 실행시킬 액티비티 이름);
-//                intent.putExtra("Difficulty", Difficulty);
-//                intent.putExtra("WordMeaning", WordMeaning);
-//                startActivity(intent);
-            }
-        });
-
-        return rootView;
+        if (v == btnType1) {
+//            Intent intent = new Intent((MainActivity) getActivity(), 실행시킬 액티비티 이름);
+//            intent.putExtra("Difficulty", Difficulty);
+//            intent.putExtra("WordMeaning", WordMeaning);
+//            startActivity(intent);
+        } else if (v == btnType2) {
+            Intent intent = new Intent(getActivity(), MultipleChoiceQuizActivity.class);
+            intent.putExtra(MultipleChoiceQuizActivity.EXTRA_NOTE_ID, noteId);
+            intent.putExtra("Difficulty", Difficulty);
+            intent.putExtra("WordMeaning", WordMeaning);
+            startActivity(intent);
+        } else if (v == btnType3) {
+//            Intent intent = new Intent((MainActivity) getActivity(), 실행시킬 액티비티 이름);
+//            intent.putExtra("Difficulty", Difficulty);
+//            intent.putExtra("WordMeaning", WordMeaning);
+//            startActivity(intent);
+        }
     }
 
     @Override

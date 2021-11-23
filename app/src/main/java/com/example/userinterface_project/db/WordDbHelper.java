@@ -220,11 +220,11 @@ public class WordDbHelper extends SQLiteOpenHelper {
     /**
      * 단어장에서 단어 목록 불러오기
      */
-    public List<Word> getWordList(long noteId) {
+    public ArrayList<Word> getWordList(long noteId) {
         return getWords(-1, noteId);
     }
 
-    private List<Word> getWords(long wordId, long noteId) {
+    private ArrayList<Word> getWords(long wordId, long noteId) {
         SQLiteDatabase db = getReadableDatabase();
 
         String selection;

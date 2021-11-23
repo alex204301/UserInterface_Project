@@ -20,4 +20,6 @@
 
     <string name="last_studied">최근 학습일: %s</string>
     <string name="count">맞은 횟수: %d / 틀린 횟수: %d</string>
+
+    <string name="multiple_choice_error">객관식 문제를 풀려면 단어장에 %d개 이상의 단어가 있어야 합니다.</string>
 </resources>
