@@ -13,6 +13,13 @@
         <activity
             android:name=".MultipleChoiceQuizActivity"
             android:exported="false" />
+
+        <activity android:name=".SelfPracticeActivity"
+            android:exported="false" />
+
+        <activity android:name=".SubjectiveQuizActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ModifyWordActivity"
             android:label="단어 수정/삭제"
