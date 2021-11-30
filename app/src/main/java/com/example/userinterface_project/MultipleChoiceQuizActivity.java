@@ -2,9 +2,11 @@ package com.example.userinterface_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -21,6 +23,7 @@ public class MultipleChoiceQuizActivity extends AppCompatActivity
         implements QuizResultFragment.OnResultButtonClickListener {
     public static final String EXTRA_NOTE_ID = "noteId";
     public static final String WRONG_QUESTIONS = "wrongQuestions";
+    private final WordDbHelper dbHelper = WordDbHelper.getInstance(this);
     private ArrayList<Word> words;
     private LinearProgressIndicator progressBar;
     private List<Word> wrongQuestions;
@@ -36,6 +39,10 @@ public class MultipleChoiceQuizActivity extends AppCompatActivity
         isTypeWord = "word".equals(intent.getStringExtra("WordMeaning")); // 퀴즈 유형
         noteId = intent.getLongExtra(EXTRA_NOTE_ID, -1);
         getWords();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("퀴즈 - " + dbHelper.getNote(noteId).getName());
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         if (words.size() < MultipleChoiceQuizFragment.NUMBER_OF_CHOICES) {
             Toast.makeText(this,
@@ -64,6 +71,15 @@ public class MultipleChoiceQuizActivity extends AppCompatActivity
         }
 
         progressBar = findViewById(R.id.progress_indicator);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
