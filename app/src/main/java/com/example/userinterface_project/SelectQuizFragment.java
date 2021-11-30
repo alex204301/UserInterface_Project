@@ -90,10 +90,11 @@ public class SelectQuizFragment extends Fragment implements View.OnClickListener
             WordMeaning = "meaning";
 
         if (v == btnType1) {
-//            Intent intent = new Intent((MainActivity) getActivity(), 실행시킬 액티비티 이름);
-//            intent.putExtra("Difficulty", Difficulty);
-//            intent.putExtra("WordMeaning", WordMeaning);
-//            startActivity(intent);
+            Intent intent = new Intent(getActivity(), SubjectiveQuizActivity.class);
+            intent.putExtra(SubjectiveQuizActivity.EXTRA_NOTE_ID, noteId);
+            intent.putExtra("Difficulty", Difficulty);
+            intent.putExtra("WordMeaning", WordMeaning);
+            startActivity(intent);
         } else if (v == btnType2) {
             Intent intent = new Intent(getActivity(), MultipleChoiceQuizActivity.class);
             intent.putExtra(MultipleChoiceQuizActivity.EXTRA_NOTE_ID, noteId);
