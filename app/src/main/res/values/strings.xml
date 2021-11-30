@@ -22,4 +22,11 @@
     <string name="count">맞은 횟수: %d / 틀린 횟수: %d</string>
 
     <string name="multiple_choice_error">객관식 문제를 풀려면 단어장에 %d개 이상의 단어가 있어야 합니다.</string>
+    <string name="next_button">다음 ></string>
+
+    <string name="result_text1">맞힌 개수/전체 개수</string>
+    <string name="quiz_result">%d/%d</string>
+    <string name="retry_button">다시 풀기</string>
+    <string name="retry_button2">틀린 문제만 다시 풀기</string>
+    <string name="finish_button">종료</string>
 </resources>
