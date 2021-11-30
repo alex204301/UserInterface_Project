@@ -16,9 +16,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.userinterface_project.db.Word;
+import com.example.userinterface_project.db.WordDbHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class MultipleChoiceQuizFragment extends Fragment {
@@ -27,24 +29,30 @@ public class MultipleChoiceQuizFragment extends Fragment {
     private static final String ARG_QUESTIONS = "questions";
     private static final String ARG_IS_TYPE_WORD = "isTypeWord";
 
+    private static final String CURRENT_QUIZ = "currentQuiz";
+    private static final String ANSWERS = "answers";
+    private static final String CLICKED_BUTTON = "clickedButton";
+
     private final Random random = new Random();
     private final Button[] choiceButtons = new Button[NUMBER_OF_CHOICES];
-
+    private final ArrayList<Word> wrong = new ArrayList<>();
     private ArrayList<Word> words; // 전체 단어 목록
-    private ArrayList<Word> questions;
+    private List<Word> questions;
     private int currentQuiz = -1;
     private boolean isTypeWord;
     private ArrayList<Word> answers; // 선택지
-
+    private int clickedButton = -1;
     private TextView questionTextView;
     private Button nextButton;
+    private WordDbHelper dbHelper;
+
+    private int right = 0;
 
     public MultipleChoiceQuizFragment() {
     }
 
-
     public static MultipleChoiceQuizFragment newInstance(
-            MultipleChoiceQuizActivity activity, ArrayList<Word> questions, boolean isTypeWord) {
+            MultipleChoiceQuizActivity activity, List<Word> questions, boolean isTypeWord) {
         ArrayList<Word> words = activity.getWords();
         int[] questionIds = new int[questions.size()]; // bundle 저장용
         int i = 0;
@@ -67,12 +75,21 @@ public class MultipleChoiceQuizFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MultipleChoiceQuizActivity activity = (MultipleChoiceQuizActivity) requireActivity();
+        dbHelper = WordDbHelper.getInstance(activity);
         Bundle args = requireArguments();
         if (words == null) {
             words = activity.getWords();
             questions = activity.getWordsByIds(args.getIntArray(ARG_QUESTIONS));
         }
         isTypeWord = args.getBoolean(ARG_IS_TYPE_WORD);
+
+        if (savedInstanceState != null) {
+            currentQuiz = savedInstanceState.getInt(CURRENT_QUIZ, currentQuiz);
+            answers = activity.getWordsByIds(savedInstanceState.getIntArray(ANSWERS));
+            clickedButton = savedInstanceState.getInt(CLICKED_BUTTON, clickedButton);
+        } else {
+            createNextQuiz();
+        }
     }
 
     @Override
@@ -90,29 +107,61 @@ public class MultipleChoiceQuizFragment extends Fragment {
             int index = i;
             Button b = (Button) inflater.inflate(R.layout.choice_button, layout, false);
             layout.addView(b);
-            b.setOnClickListener(v -> onButtonClick(index));
+            b.setOnClickListener(v -> {
+                clickedButton = index;
+                Word currentQuestion = questions.get(currentQuiz);
+                if (currentQuestion.getId() == answers.get(clickedButton).getId()) {
+                    right++;
+                    dbHelper.incrementCountCorrect(currentQuestion.getId());
+                } else {
+                    wrong.add(currentQuestion);
+                    dbHelper.incrementCountIncorrect(currentQuestion.getId());
+                }
+                updateButtonColor();
+            });
             choiceButtons[i] = b;
         }
         nextButton = view.findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> {
-            currentQuiz++;
-            showCurrentQuiz();
+            if (currentQuiz + 1 >= questions.size()) {
+                MultipleChoiceQuizActivity activity = (MultipleChoiceQuizActivity) requireActivity();
+                activity.setQuizProgress(1, 1);
+                activity.showResult(right, questions.size() - right, wrong);
+            } else {
+                createNextQuiz();
+                showCurrentQuiz();
+            }
         });
-        currentQuiz = 0;
         showCurrentQuiz();
+        if (clickedButton != -1) {
+            updateButtonColor();
+        }
     }
 
-    private void onButtonClick(int index) {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(CURRENT_QUIZ, currentQuiz);
+        int[] answerArray = new int[answers.size()];
+        int i = 0;
+        for (Word w : answers) {
+            answerArray[i++] = (int) w.getId();
+        }
+        outState.putIntArray(ANSWERS, answerArray);
+        outState.putInt(CLICKED_BUTTON, clickedButton);
+    }
+
+    private void updateButtonColor() {
+        Word question = questions.get(currentQuiz);
         Context context = requireContext();
-        Word question = (Word) questionTextView.getTag();
+
         for (int i = 0; i < NUMBER_OF_CHOICES; i++) {
             Button button = choiceButtons[i];
             button.setClickable(false);
-            Word word = (Word) button.getTag();
+            Word word = answers.get(i);
             if (word.getId() == question.getId()) {
                 button.setBackgroundTintList(ContextCompat.getColorStateList(
                         context, R.color.choice_button_color_correct));
-            } else if (index == i) {
+            } else if (clickedButton == i) {
                 button.setBackgroundTintList(ContextCompat.getColorStateList(
                         context, R.color.choice_button_color_incorrect));
             }
@@ -121,16 +170,12 @@ public class MultipleChoiceQuizFragment extends Fragment {
         nextButton.setEnabled(true);
     }
 
-    private void showCurrentQuiz() {
-        MultipleChoiceQuizActivity activity = (MultipleChoiceQuizActivity) requireActivity();
-        activity.setQuizProgress(currentQuiz, questions.size());
-        Word word = questions.get(currentQuiz);
-        questionTextView.setText(isTypeWord ? word.getMeaning() : word.getWord());
-        questionTextView.setTag(word);
-
+    private void createNextQuiz() {
+        clickedButton = -1;
+        currentQuiz++;
         // 선택지 만들기
         answers = new ArrayList<>(NUMBER_OF_CHOICES);
-        answers.add(word); // 선택지에 답 추가
+        answers.add(questions.get(currentQuiz)); // 선택지에 답 추가
 
         outer:
         // 나머지 랜덤으로 추가
@@ -145,6 +190,13 @@ public class MultipleChoiceQuizFragment extends Fragment {
             answers.add(add);
         }
         Collections.shuffle(answers); // 보기 순서 섞기
+    }
+
+    private void showCurrentQuiz() {
+        MultipleChoiceQuizActivity activity = (MultipleChoiceQuizActivity) requireActivity();
+        activity.setQuizProgress(currentQuiz, questions.size());
+        Word word = questions.get(currentQuiz);
+        questionTextView.setText(isTypeWord ? word.getMeaning() : word.getWord());
 
         // 버튼 설정
         ColorStateList choiceButtonColor =
@@ -157,7 +209,6 @@ public class MultipleChoiceQuizFragment extends Fragment {
             } else {
                 button.setText(item.getMeaning());
             }
-            button.setTag(item);
 
             button.setClickable(true);
             button.setBackgroundTintList(choiceButtonColor);

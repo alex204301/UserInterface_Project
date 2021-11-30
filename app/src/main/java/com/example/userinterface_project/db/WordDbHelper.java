@@ -201,6 +201,30 @@ public class WordDbHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * 맞힌 횟수 1 증가
+     */
+    public void incrementCountCorrect(long wordId) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL("UPDATE " + DbContract.Words.TABLE_NAME +
+                " SET " + DbContract.Words.COLUMN_COUNT_CORRECT + "=" +
+                DbContract.Words.COLUMN_COUNT_CORRECT + "+1 " +
+                "WHERE " + DbContract.Words._ID + "=?", new Object[]{wordId});
+    }
+
+    /**
+     * 틀린 횟수 1 증가
+     */
+    public void incrementCountIncorrect(long wordId) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL("UPDATE " + DbContract.Words.TABLE_NAME +
+                " SET " + DbContract.Words.COLUMN_COUNT_INCORRECT + "=" +
+                DbContract.Words.COLUMN_COUNT_INCORRECT + "+1 " +
+                "WHERE " + DbContract.Words._ID + "=?", new Object[]{wordId});
+    }
+
+    /**
      * 단어 하나 삭제
      */
     public void deleteWord(long wordId) {
