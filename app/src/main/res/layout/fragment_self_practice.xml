@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MultipleChoiceQuizActivity">
+
+    <TextView
+        android:id="@+id/word_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textSize="25dp"
+        tools:text="relatively" />
+
+    <RelativeLayout
+        android:id="@+id/choices_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp">
+        <TextView
+            android:id="@+id/answer_textView"
+            android:layout_alignParentTop="true"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="비교적"
+            android:textSize="18dp"/>
+        <Button
+            android:id="@+id/answerBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="정답 보기"
+            android:layout_below="@id/answer_textView"
+            android:layout_marginTop="20dp"
+            />
+
+        <Button
+            android:id="@+id/correctBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/answerBtn"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="60dp"
+            android:backgroundTint="@color/choice_button_color_correct"
+            android:text="O"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/wrongBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/answerBtn"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="60dp"
+            android:backgroundTint="@color/choice_button_color_incorrect"
+            android:text="X"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+</LinearLayout>

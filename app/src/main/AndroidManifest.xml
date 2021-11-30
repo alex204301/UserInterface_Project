@@ -11,12 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UserInterface_Project">
         <activity
+            android:name=".SelfPracticeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MultipleChoiceQuizActivity"
             android:exported="false" />
         <activity
             android:name=".ModifyWordActivity"
-            android:label="단어 수정/삭제"
-            android:exported="false" />
+            android:exported="false"
+            android:label="단어 수정/삭제" />
         <activity
             android:name=".FilterActivity"
             android:exported="true" />
