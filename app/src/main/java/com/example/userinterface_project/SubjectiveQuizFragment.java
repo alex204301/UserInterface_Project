@@ -1,50 +1,50 @@
 package com.example.userinterface_project;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.userinterface_project.db.Word;
+import com.example.userinterface_project.db.WordDbHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.util.List;
 
 public class SubjectiveQuizFragment extends Fragment {
 
     private static final String ARG_QUESTIONS = "questions";
     private static final String ARG_IS_TYPE_WORD = "isTypeWord";
+    private static final String CURRENT_QUIZ = "currentQuiz";
 
     private ArrayList<Word> words; // 전체 단어 목록
-    private ArrayList<Word> questions;
+    private List<Word> questions;
     private int currentQuiz = -1;
     private boolean isTypeWord;
+    private final ArrayList<Word> wrong = new ArrayList<>();
 
     private TextView questionTextView;
     private EditText editText;
     private Button checkButton;
     private TextView correctAnswer;
     private Button nextButton;
+    private WordDbHelper dbHelper;
+
+    private int right = 0;
 
     public SubjectiveQuizFragment() {
     }
 
     public static SubjectiveQuizFragment newInstance(
-            SubjectiveQuizActivity activity, ArrayList<Word> questions, boolean isTypeWord) {
+            SubjectiveQuizActivity activity, List<Word> questions, boolean isTypeWord) {
         ArrayList<Word> words = activity.getWords();
         int[] questionIds = new int[questions.size()]; // bundle 저장용
         int i = 0;
@@ -67,13 +67,19 @@ public class SubjectiveQuizFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SubjectiveQuizActivity activity = (SubjectiveQuizActivity) requireActivity();
-
+        dbHelper = WordDbHelper.getInstance(activity);
         Bundle args = requireArguments();
         if (words == null) {
             words = activity.getWords();
             questions = activity.getWordsByIds(args.getIntArray(ARG_QUESTIONS));
         }
         isTypeWord = args.getBoolean(ARG_IS_TYPE_WORD);
+
+        if (savedInstanceState != null) {
+            currentQuiz = savedInstanceState.getInt(CURRENT_QUIZ, currentQuiz);
+        } else {
+            currentQuiz = 0;
+        }
     }
 
     @Override
@@ -91,63 +97,78 @@ public class SubjectiveQuizFragment extends Fragment {
         correctAnswer = view.findViewById(R.id.correct_answer);
         nextButton = view.findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> {
-            currentQuiz++;
-            showCurrentQuiz();
+            if (currentQuiz + 1 >= questions.size()) {
+                SubjectiveQuizActivity activity = (SubjectiveQuizActivity) requireActivity();
+                activity.setQuizProgress(1, 1);
+                activity.showResult(right, questions.size() - right, wrong);
+            } else {
+                currentQuiz++;
+                showCurrentQuiz();
+            }
         });
         currentQuiz = 0;
         showCurrentQuiz();
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint({"ResourceAsColor", "UseCompatLoadingForDrawables", "SetTextI18n"})
     private void onCheckButtonClick(){
-        Context context = requireContext();
+        Word currentQuestion = questions.get(currentQuiz);
         editText.setClickable(false);
+        editText.setEnabled(false);
         editText.setFocusable(false);
+        editText.setFocusableInTouchMode(false);
         checkButton.setVisibility(View.GONE);
         Word word = (Word) questionTextView.getTag();
         if(isTypeWord) {// eqitText 수정 불가능하게하고 색칠하기, 틀렸으면 맞는 답 출력
             if(word.getWord().equals(editText.getText().toString())) {
-                editText.setBackgroundTintList(ContextCompat.getColorStateList(
-                        context, R.color.choice_button_color_correct));
+                editText.setBackground(this.getResources().getDrawable(R.drawable.edit_text_correct));
+                right++;
+                dbHelper.incrementCountCorrect(currentQuestion.getId());
             }
             else {
-                editText.setBackgroundTintList(ContextCompat.getColorStateList(
-                        context, R.color.choice_button_color_incorrect));
+                editText.setBackground(this.getResources().getDrawable(R.drawable.edit_text_wrong));
                 correctAnswer.setVisibility(View.VISIBLE);
-                correctAnswer.setText(word.getWord());
+                correctAnswer.setText("답 : " + word.getWord());
+                wrong.add(currentQuestion);
+                dbHelper.incrementCountIncorrect(currentQuestion.getId());
             }
         }
         else {
             if(word.getMeaning().equals(editText.getText().toString())) {
-                editText.setBackgroundTintList(ContextCompat.getColorStateList(
-                        context, R.color.choice_button_color_correct));
+                editText.setBackground(this.getResources().getDrawable(R.drawable.edit_text_correct));
+                right++;
+                dbHelper.incrementCountCorrect(currentQuestion.getId());
             }
             else {
-                editText.setBackgroundTintList(ContextCompat.getColorStateList(
-                        context, R.color.choice_button_color_incorrect));
+                editText.setBackground(this.getResources().getDrawable(R.drawable.edit_text_wrong));
                 correctAnswer.setVisibility(View.VISIBLE);
-                correctAnswer.setText(word.getMeaning());
+                correctAnswer.setText("답 : " + word.getMeaning());
+                wrong.add(currentQuestion);
+                dbHelper.incrementCountIncorrect(currentQuestion.getId());
             }
         }
         nextButton.setVisibility(View.VISIBLE);
         nextButton.setEnabled(true);
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint({"ResourceAsColor", "ResourceType", "UseCompatLoadingForDrawables"})
     private void showCurrentQuiz() {
         SubjectiveQuizActivity activity = (SubjectiveQuizActivity) requireActivity();
         activity.setQuizProgress(currentQuiz, questions.size());
         Word word = questions.get(currentQuiz);
         questionTextView.setText(isTypeWord ? word.getMeaning() : word.getWord());
         questionTextView.setTag(word);
-        editText.setFocusable(true);
         editText.setClickable(true);
-        editText.setBackgroundColor(android.R.drawable.editbox_background);
+        editText.setEnabled(true);
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+        editText.setBackground(this.getResources().getDrawable(R.drawable.edit_text_border));
+        editText.setText(null);
         editText.setHint(isTypeWord ? "단어를 입력해주세요" : "뜻을 입력해주세요");
         checkButton.setVisibility(View.VISIBLE);
         correctAnswer.setVisibility(View.GONE);
 
         // 다음 버튼
-        nextButton.setEnabled(false);
+        nextButton.setVisibility(View.GONE);
     }
 }

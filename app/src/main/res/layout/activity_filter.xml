@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="필터"
+            android:text="난이도 선택"
             android:textSize="20dp"
             android:layout_marginTop="20dp"/>
 
@@ -106,6 +106,24 @@
                 android:text="어려움"
                 android:layoutDirection="rtl"
                 android:checked="true"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="단어/뜻 선택"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical"
+            android:divider="@drawable/divider_shape"
+            android:showDividers="middle">
 
             <CheckBox
                 android:id="@+id/checkbox_word"

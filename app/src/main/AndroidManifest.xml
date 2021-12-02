@@ -20,9 +20,6 @@
         <activity android:name=".SelfPracticeActivity"
             android:exported="false" />
 
-        <activity android:name=".SubjectiveQuizActivity"
-            android:exported="false" />
-
         <activity
             android:name=".ModifyWordActivity"
             android:exported="false"
