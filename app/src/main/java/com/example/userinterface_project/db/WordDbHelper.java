@@ -41,10 +41,92 @@ public class WordDbHelper extends SQLiteOpenHelper {
                 DbContract.Words.COLUMN_COUNT_CORRECT + " INTEGER DEFAULT 0, " +
                 DbContract.Words.COLUMN_COUNT_INCORRECT + " INTEGER DEFAULT 0, " +
                 DbContract.Words.COLUMN_DIFFICULTY + " INTEGER)"); // words(단어 목록) 테이블
+
+        db.execSQL("CREATE TABLE " + DbContract.Alarms.TABLE_NAME + " (" +
+                DbContract.Alarms._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DbContract.Alarms.COLUMN_HOUR + " INTEGER, " +
+                DbContract.Alarms.COLUMN_MINUTE + " INTEGER)");  // alarms(알람) 테이블
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    }
+
+    /**
+     * 새 알람 만들기
+     */
+    public long createAlarm(int hour, int minute) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DbContract.Alarms.COLUMN_HOUR, hour);
+        values.put(DbContract.Alarms.COLUMN_MINUTE, minute);
+
+        return db.insert(DbContract.Alarms.TABLE_NAME, null, values);
+    }
+
+    public Alarm getAlarm(long alarmId) {
+        return getAlarmList(alarmId).get(0);
+    }
+
+    /**
+     * 알람 목록 불러오기
+     */
+    public List<Alarm> getAlarmList() {
+        return getAlarmList(-1);
+    }
+
+    private List<Alarm> getAlarmList(long alarmId) {
+        SQLiteDatabase db = getReadableDatabase();
+        StringBuilder sql = new StringBuilder("SELECT * FROM ").append(DbContract.Alarms.TABLE_NAME);
+        if (alarmId != -1) {
+            sql.append(" WHERE ")
+                    .append(DbContract.Alarms._ID)
+                    .append("=?");
+        }
+        Cursor cursor = db.rawQuery(sql.toString(),
+                alarmId == -1 ? null : new String[]{String.valueOf(alarmId)});
+
+        ArrayList<Alarm> alarms = new ArrayList<>(cursor.getCount());
+
+        int columnId = cursor.getColumnIndex(DbContract.Alarms._ID);
+        int columnHour = cursor.getColumnIndex(DbContract.Alarms.COLUMN_HOUR);
+        int columnMinute = cursor.getColumnIndex(DbContract.Alarms.COLUMN_MINUTE);
+        while (cursor.moveToNext()) {
+            alarms.add(new Alarm(
+                    cursor.getLong(columnId),
+                    cursor.getInt(columnHour),
+                    cursor.getInt(columnMinute)
+            ));
+        }
+
+        cursor.close();
+
+        return alarms;
+    }
+
+    /**
+     * 알람 수정
+     */
+    public void editAlarm(long alarmId, int hour, int minute) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DbContract.Alarms.COLUMN_HOUR, hour);
+        values.put(DbContract.Alarms.COLUMN_MINUTE, minute);
+
+        db.update(DbContract.Alarms.TABLE_NAME, values, DbContract.Alarms._ID + "=?",
+                new String[]{String.valueOf(alarmId)});
+    }
+
+    /**
+     * 알람 삭제
+     */
+    public void deleteAlarm(long alarmId) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.delete(DbContract.Alarms.TABLE_NAME, DbContract.Alarms._ID + "=?",
+                new String[]{String.valueOf(alarmId)}); // alarm 삭제
     }
 
     /**

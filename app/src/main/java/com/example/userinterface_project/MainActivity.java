@@ -80,4 +80,13 @@ public class MainActivity extends AppCompatActivity{
                 .setReorderingAllowed(true)
                 .commit();
     }
+
+    public void showAlarmSetting() {
+        getSupportFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.container, AlarmSettingFragment.newInstance())
+                .addToBackStack(null)
+                .setReorderingAllowed(true)
+                .commit();
+    }
 }

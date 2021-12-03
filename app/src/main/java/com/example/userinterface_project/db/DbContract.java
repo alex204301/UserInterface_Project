@@ -10,6 +10,13 @@ public class DbContract {
         public static final String COLUMN_LAST_STUDIED = "last_studied";
     }
 
+    public static final class Alarms implements  BaseColumns {
+        public static final String TABLE_NAME = "alarms";
+
+        public static final String COLUMN_HOUR = "hour";
+        public static final String COLUMN_MINUTE = "minute";
+    }
+
     public static final class Words implements BaseColumns {
         public static final String TABLE_NAME = "words";
 

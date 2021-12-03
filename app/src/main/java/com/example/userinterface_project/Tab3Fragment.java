@@ -32,10 +32,10 @@ public class Tab3Fragment extends Fragment {
 //            Intent intent = new Intent(getActivity(), ~Activity.class);
 //            startActivity(intent);
 //        });
-//        alarmSetting.setOnClickListener(v -> {
-//            Intent intent = new Intent(getActivity(), ~Activity.class);
-//            startActivity(intent);
-//        });
+        alarmSetting.setOnClickListener(v -> {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.showAlarmSetting();
+        });
 
         return rootView;
     }
