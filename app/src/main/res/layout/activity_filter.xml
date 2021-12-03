@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="난이도 선택"
+            android:text="필터"
             android:textSize="20dp"
             android:layout_marginTop="20dp"/>
 
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="단어/뜻 선택"
+            android:text="단어/뜻 가리기"
             android:textSize="20dp"
             android:layout_marginTop="20dp"/>
 

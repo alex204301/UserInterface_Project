@@ -44,8 +44,8 @@ public class FilterActivity extends AppCompatActivity implements CompoundButton.
         checkBoxEasy.setChecked(getIntent().getBooleanExtra("showEasy", true));
         checkBoxNormal.setChecked(getIntent().getBooleanExtra("showNormal", true));
         checkBoxHard.setChecked(getIntent().getBooleanExtra("showHard", true));
-        checkBoxWord.setChecked(getIntent().getBooleanExtra("showWord", true));
-        checkBoxMeaning.setChecked(getIntent().getBooleanExtra("showMeaning", true));
+        checkBoxWord.setChecked(getIntent().getBooleanExtra("hideWord", true));
+        checkBoxMeaning.setChecked(getIntent().getBooleanExtra("hideMeaning", true));
 
         checkBoxEasy.setOnCheckedChangeListener(this);
         checkBoxNormal.setOnCheckedChangeListener(this);
@@ -66,11 +66,11 @@ public class FilterActivity extends AppCompatActivity implements CompoundButton.
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        //난이도가 모두 unchecked 되거나, 단어와 뜻이 모두 unchecked 되는 것을 막는다.
+        //난이도가 모두 unchecked 되거나, 단어와 뜻이 모두 checked 되는 것을 막는다.
         if(!(checkBoxEasy.isChecked()||checkBoxNormal.isChecked()||checkBoxHard.isChecked()))
             buttonView.setChecked(true);
-        if(!(checkBoxWord.isChecked()||checkBoxMeaning.isChecked()))
-            buttonView.setChecked(true);
+        if(checkBoxWord.isChecked()&&checkBoxMeaning.isChecked())
+            buttonView.setChecked(false);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class FilterActivity extends AppCompatActivity implements CompoundButton.
         returnIntent.putExtra("showEasy", checkBoxEasy.isChecked());
         returnIntent.putExtra("showNormal", checkBoxNormal.isChecked());
         returnIntent.putExtra("showHard", checkBoxHard.isChecked());
-        returnIntent.putExtra("showWord", checkBoxWord.isChecked());
-        returnIntent.putExtra("showMeaning", checkBoxMeaning.isChecked());
+        returnIntent.putExtra("hideWord", checkBoxWord.isChecked());
+        returnIntent.putExtra("hideMeaning", checkBoxMeaning.isChecked());
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }

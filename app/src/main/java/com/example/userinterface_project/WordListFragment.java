@@ -41,8 +41,8 @@ public class WordListFragment extends Fragment {
     private boolean showEasy;
     private boolean showNormal;
     private boolean showHard;
-    private boolean showWord;
-    private boolean showMeaning;
+    private boolean hideWord;
+    private boolean hideMeaning;
 
     private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -54,8 +54,8 @@ public class WordListFragment extends Fragment {
                         showEasy = result.getData().getBooleanExtra("showEasy", true);
                         showNormal = result.getData().getBooleanExtra("showNormal", true);
                         showHard = result.getData().getBooleanExtra("showHard", true);
-                        showWord = result.getData().getBooleanExtra("showWord", true);
-                        showMeaning = result.getData().getBooleanExtra("showMeaning", true);
+                        hideWord = result.getData().getBooleanExtra("hideWord", true);
+                        hideMeaning = result.getData().getBooleanExtra("hideMeaning", true);
                     }
                     refreshList();
                 }
@@ -86,8 +86,8 @@ public class WordListFragment extends Fragment {
         showEasy = true;
         showNormal = true;
         showHard = true;
-        showWord = true;
-        showMeaning = true;
+        hideWord = false;
+        hideMeaning = false;
 
         FloatingActionButton fab = rootView.findViewById(R.id.tab1_plus_btn);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +128,8 @@ public class WordListFragment extends Fragment {
             intent.putExtra("showEasy", showEasy);
             intent.putExtra("showNormal", showNormal);
             intent.putExtra("showHard", showHard);
-            intent.putExtra("showWord", showWord);
-            intent.putExtra("showMeaning", showMeaning);
+            intent.putExtra("hideWord", hideWord);
+            intent.putExtra("hideMeaning", hideMeaning);
             resultLauncher.launch(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -237,11 +237,11 @@ public class WordListFragment extends Fragment {
                     word.getCountCorrect(), word.getCountIncorrect()));
 
             //단어,뜻 가리기
-            if(!showWord)
+            if(hideWord)
                 holder.text1.setVisibility(View.INVISIBLE);
             else
                 holder.text1.setVisibility(View.VISIBLE);
-            if(!showMeaning)
+            if(hideMeaning)
                 holder.text2.setVisibility(View.INVISIBLE);
             else
                 holder.text2.setVisibility(View.VISIBLE);
@@ -270,13 +270,13 @@ public class WordListFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {//단어,뜻 가리기 기능 사용 시 짧게 클릭하면 가려졌던게 보이는 일 수행
-                    if(!showWord) {          //                        길게 클릭하면 수정화면으로 넘어감
+                    if(hideWord) {          //                        길게 클릭하면 수정화면으로 넘어감
                         if(holder.text1.getVisibility()==View.INVISIBLE)
                             holder.text1.setVisibility(View.VISIBLE);
                         else
                             holder.text1.setVisibility(View.INVISIBLE);
                     }
-                    else if(!showMeaning) {
+                    else if(hideMeaning) {
                         if(holder.text2.getVisibility()==View.INVISIBLE)
                             holder.text2.setVisibility(View.VISIBLE);
                         else
@@ -292,7 +292,7 @@ public class WordListFragment extends Fragment {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if(!showWord||!showMeaning){
+                    if(hideWord ||hideMeaning){
                         Intent intent = new Intent((MainActivity) getActivity(), ModifyWordActivity.class);
                         intent.putExtra(ModifyWordActivity.EXTRA_WORD_ID, holder.getItemId());
                         resultLauncher.launch(intent);
