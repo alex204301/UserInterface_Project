@@ -5,11 +5,39 @@
     android:layout_height="match_parent"
     tools:context=".Tab3Fragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="구현 예정"
-        android:textSize="25dp"
-        android:gravity="center"/>
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="자신만의 학습 계획을 세워보세요"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/goal_setting"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            style = "@style/Widget.AppCompat.Button"
+            android:text="목표 설정"
+            android:textSize="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/alarm_setting"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            style = "@style/Widget.AppCompat.Button"
+            android:text="알림 설정"
+            android:textSize="20dp"/>
+
+    </LinearLayout>
+
+
 
 </FrameLayout>
