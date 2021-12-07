@@ -10,16 +10,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UserInterface_Project">
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+
+        </receiver>
+
         <activity
             android:name=".SubjectiveQuizActivity"
             android:exported="false" />
         <activity
             android:name=".MultipleChoiceQuizActivity"
             android:exported="false" />
-
-        <activity android:name=".SelfPracticeActivity"
+        <activity
+            android:name=".SelfPracticeActivity"
             android:exported="false" />
-
         <activity
             android:name=".ModifyWordActivity"
             android:exported="false"

@@ -1,8 +1,11 @@
 package com.example.userinterface_project;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -66,6 +69,18 @@ public class AlarmSettingFragment extends Fragment {
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         WordDbHelper dbHelper = WordDbHelper.getInstance(getContext());
                         dbHelper.createAlarm(hourOfDay, minute);
+
+                        int requestCode = hourOfDay * 100 + minute;
+                        Intent intent = new Intent(v.getContext(), AlarmReceiver.class);
+                        PendingIntent alarmIndent = PendingIntent.getBroadcast(v.getContext(),requestCode,intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        AlarmManager manager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
+
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+
+                        manager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIndent);
                         refreshList();
                     }
                 }, hour, minute, false);
@@ -181,7 +196,16 @@ public class AlarmSettingFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     WordDbHelper dbHelper = WordDbHelper.getInstance(v.getContext());
+                                    Alarm alarm = dbHelper.getAlarm(getItemId());
                                     dbHelper.deleteAlarm(getItemId());
+
+                                    int requestCode = alarm.getHour()*100 + alarm.getMinutes();
+                                    Intent intent = new Intent(v.getContext(), AlarmReceiver.class);
+                                    PendingIntent alarmIndent = PendingIntent.getBroadcast(v.getContext(),requestCode,intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                                    AlarmManager manager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
+                                    if(alarmIndent != null && manager != null)
+                                        manager.cancel(alarmIndent);
+
                                     MainActivity activity = (MainActivity) itemView.getContext();
                                     activity.replaceFragment(new AlarmSettingFragment());
                                 }
