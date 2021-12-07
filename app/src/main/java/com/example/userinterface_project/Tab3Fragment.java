@@ -28,10 +28,10 @@ public class Tab3Fragment extends Fragment {
         goalSetting = rootView.findViewById(R.id.goal_setting);
         alarmSetting = rootView.findViewById(R.id.alarm_setting);
 
-//        goalSetting.setOnClickListener(v -> {
-//            Intent intent = new Intent(getActivity(), ~Activity.class);
-//            startActivity(intent);
-//        });
+        goalSetting.setOnClickListener(v -> {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.showGoalSetting();
+        });
         alarmSetting.setOnClickListener(v -> {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.showAlarmSetting();

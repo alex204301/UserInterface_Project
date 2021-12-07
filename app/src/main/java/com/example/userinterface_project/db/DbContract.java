@@ -27,4 +27,12 @@ public class DbContract {
         public static final String COLUMN_COUNT_INCORRECT = "incorrect_count";
         public static final String COLUMN_DIFFICULTY = "difficulty";
     }
+
+    public static final class Goals implements BaseColumns {
+        public static final String TABLE_NAME = "goals";
+
+        public static final String COLUMN_DATE = "date";
+        public static final String COLUMN_SOLVED_QUIZZES = "solved_quizzes";
+
+    }
 }

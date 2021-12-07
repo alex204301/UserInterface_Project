@@ -29,4 +29,8 @@
     <string name="retry_button">다시 풀기</string>
     <string name="retry_button2">틀린 문제만 다시 풀기</string>
     <string name="finish_button">종료</string>
+
+    <string name="goal">목표: %d</string>
+    <string name="solved_quizzes">푼 문제 수: %d</string>
+    <string name="goal_is_not_set">목표를 설정하세요!</string>
 </resources>
