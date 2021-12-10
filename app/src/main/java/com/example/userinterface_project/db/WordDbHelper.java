@@ -5,14 +5,23 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class WordDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "word.db";
+    public static final DateFormat GOAL_DATE_FORMAT =
+            new SimpleDateFormat("yyyyMMdd", Locale.US);
     private static WordDbHelper instance;
 
     private WordDbHelper(Context context) {
@@ -26,14 +35,23 @@ public class WordDbHelper extends SQLiteOpenHelper {
         return instance;
     }
 
+    private static Date parseDate(String s) {
+        try {
+            return Objects.requireNonNull(GOAL_DATE_FORMAT.parse(s));
+        } catch (ParseException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + DbContract.Notes.TABLE_NAME + " (" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + DbContract.Notes.TABLE_NAME + " (" +
                 DbContract.Notes._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbContract.Notes.COLUMN_NAME + " TEXT, " +
                 DbContract.Notes.COLUMN_LAST_STUDIED + " INTEGER)"); // notes(단어장) 테이블
 
-        db.execSQL("CREATE TABLE " + DbContract.Words.TABLE_NAME + " (" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + DbContract.Words.TABLE_NAME + " (" +
                 DbContract.Words._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbContract.Words.COLUMN_NOTE_ID + " INTEGER, " +
                 DbContract.Words.COLUMN_WORD + " TEXT, " +
@@ -42,14 +60,26 @@ public class WordDbHelper extends SQLiteOpenHelper {
                 DbContract.Words.COLUMN_COUNT_INCORRECT + " INTEGER DEFAULT 0, " +
                 DbContract.Words.COLUMN_DIFFICULTY + " INTEGER)"); // words(단어 목록) 테이블
 
-        db.execSQL("CREATE TABLE " + DbContract.Alarms.TABLE_NAME + " (" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + DbContract.Alarms.TABLE_NAME + " (" +
                 DbContract.Alarms._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbContract.Alarms.COLUMN_HOUR + " INTEGER, " +
                 DbContract.Alarms.COLUMN_MINUTE + " INTEGER)");  // alarms(알람) 테이블
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + DbContract.Goals.TABLE_NAME + " (" +
+                DbContract.Goals._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DbContract.Goals.COLUMN_DATE + " TEXT UNIQUE, " +
+                DbContract.Goals.COLUMN_SOLVED_QUIZZES + " INTEGER, " +
+                DbContract.Goals.COLUMN_GOAL + " INTEGER)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + DbContract.GoalSetting.TABLE_NAME + " (" +
+                DbContract.GoalSetting._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DbContract.GoalSetting.COLUMN_DAY_OF_WEEK + " INTEGER UNIQUE NOT NULL, " +
+                DbContract.GoalSetting.COLUMN_GOAL + " INTEGER)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onCreate(db);
     }
 
     /**
@@ -282,8 +312,29 @@ public class WordDbHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(wordId)});
     }
 
+    private void incrementSolvedQuestionToday(SQLiteDatabase db) {
+        SQLiteStatement statement = db.compileStatement(
+                "UPDATE " + DbContract.Goals.TABLE_NAME +
+                        " SET " + DbContract.Goals.COLUMN_SOLVED_QUIZZES + "=" +
+                        DbContract.Goals.COLUMN_SOLVED_QUIZZES + "+1 " +
+                        "WHERE " + DbContract.Goals.COLUMN_DATE + "=?"
+        );
+        Calendar calendar = Calendar.getInstance();
+        String today = GOAL_DATE_FORMAT.format(calendar.getTime());
+        statement.bindString(1, today);
+        int update = statement.executeUpdateDelete();
+        statement.close();
+        if (update == 0) { // update가 안 됐을 경우
+            ContentValues values = new ContentValues();
+            values.put(DbContract.Goals.COLUMN_DATE, today);
+            values.put(DbContract.Goals.COLUMN_SOLVED_QUIZZES, 1);
+            values.put(DbContract.Goals.COLUMN_GOAL, getGoal(calendar.get(Calendar.DAY_OF_WEEK)));
+            db.insert(DbContract.Goals.TABLE_NAME, null, values);
+        }
+    }
+
     /**
-     * 맞힌 횟수 1 증가
+     * 맞힌 횟수 1 증가, 오늘 푼 문제 수 1 증가
      */
     public void incrementCountCorrect(long wordId) {
         SQLiteDatabase db = getWritableDatabase();
@@ -292,10 +343,11 @@ public class WordDbHelper extends SQLiteOpenHelper {
                 " SET " + DbContract.Words.COLUMN_COUNT_CORRECT + "=" +
                 DbContract.Words.COLUMN_COUNT_CORRECT + "+1 " +
                 "WHERE " + DbContract.Words._ID + "=?", new Object[]{wordId});
+        incrementSolvedQuestionToday(db);
     }
 
     /**
-     * 틀린 횟수 1 증가
+     * 틀린 횟수 1 증가, 오늘 푼 문제 수 1 증가
      */
     public void incrementCountIncorrect(long wordId) {
         SQLiteDatabase db = getWritableDatabase();
@@ -304,6 +356,102 @@ public class WordDbHelper extends SQLiteOpenHelper {
                 " SET " + DbContract.Words.COLUMN_COUNT_INCORRECT + "=" +
                 DbContract.Words.COLUMN_COUNT_INCORRECT + "+1 " +
                 "WHERE " + DbContract.Words._ID + "=?", new Object[]{wordId});
+        incrementSolvedQuestionToday(db);
+    }
+
+    /**
+     * 요일별 목표 설정
+     */
+    public void setGoal(int dayOfWeek, int goal) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DbContract.GoalSetting.COLUMN_DAY_OF_WEEK, dayOfWeek);
+        values.put(DbContract.GoalSetting.COLUMN_GOAL, goal);
+
+        if (db.update(DbContract.GoalSetting.TABLE_NAME, values,
+                DbContract.GoalSetting.COLUMN_DAY_OF_WEEK + "=?",
+                new String[]{String.valueOf(dayOfWeek)}) == 0) {
+            db.insert(DbContract.GoalSetting.TABLE_NAME, null, values);
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek) {
+            ContentValues values1 = new ContentValues();
+            values1.put(DbContract.Goals.COLUMN_GOAL, goal);
+            db.update(DbContract.Goals.TABLE_NAME, values1,
+                    DbContract.Goals.COLUMN_DATE + "=?",
+                    new String[]{GOAL_DATE_FORMAT.format(calendar.getTime())});
+        }
+    }
+
+    /**
+     * 설정된 목표 가져오기. 설정된 값이 없으면 -1 반환.
+     */
+    public int getGoal(int dayOfWeek) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(DbContract.GoalSetting.TABLE_NAME,
+                new String[]{DbContract.GoalSetting.COLUMN_GOAL},
+                DbContract.GoalSetting.COLUMN_DAY_OF_WEEK + "=" + dayOfWeek,
+                null, null, null, null);
+        int result;
+        if (cursor.moveToFirst()) {
+            result = cursor.getInt(0);
+        } else {
+            result = -1;
+        }
+        cursor.close();
+        return result;
+    }
+
+    public List<GoalListItem> getGoalList() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        ArrayList<GoalListItem> goalListItems = new ArrayList<>();
+
+        try (Cursor cursor = db.query(DbContract.Goals.TABLE_NAME,
+                new String[]{
+                        DbContract.Goals.COLUMN_DATE,
+                        DbContract.Goals.COLUMN_SOLVED_QUIZZES,
+                        DbContract.Goals.COLUMN_GOAL
+                },
+                null, null, null, null,
+                DbContract.Goals.COLUMN_DATE + " ASC"
+        )) {
+            Calendar current = Calendar.getInstance();
+            current.set(Calendar.HOUR_OF_DAY, 0);
+            current.set(Calendar.MINUTE, 0);
+            current.set(Calendar.SECOND, 0);
+            current.set(Calendar.MILLISECOND, 0);
+
+            Calendar end = Calendar.getInstance();
+            end.setTimeInMillis(current.getTimeInMillis());
+            end.add(Calendar.WEEK_OF_MONTH, 1);
+
+            if (cursor.moveToFirst()) {
+                current.setTime(parseDate(cursor.getString(0)));
+                cursor.moveToPosition(-1);
+            }
+
+            while (current.before(end)) {
+                Date cursorDate = null;
+                if (cursor.moveToNext()) {
+                    cursorDate = parseDate(cursor.getString(0));
+                }
+                Date currentDate = current.getTime();
+                if (currentDate.equals(cursorDate)) {
+                    goalListItems.add(new GoalListItem(
+                            cursorDate, cursor.getInt(1), cursor.getInt(2)));
+                } else {
+                    goalListItems.add(new GoalListItem(currentDate, 0,
+                            getGoal(current.get(Calendar.DAY_OF_WEEK))));
+                    cursor.moveToPrevious();
+                }
+                current.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
+
+        return goalListItems;
     }
 
     /**

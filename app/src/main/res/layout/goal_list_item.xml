@@ -19,21 +19,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             tools:text="10/26 (화)" />
 
         <TextView
             android:id="@+id/goal_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             tools:text="목표를 설정하세요!" />
 
         <TextView
             android:id="@+id/solved_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             tools:text="푼 문제 수: 8" />
     </LinearLayout>
 </FrameLayout>

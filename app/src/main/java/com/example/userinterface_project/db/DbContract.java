@@ -33,6 +33,13 @@ public class DbContract {
 
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_SOLVED_QUIZZES = "solved_quizzes";
+        public static final String COLUMN_GOAL = "goal";
+    }
 
+    public static final class GoalSetting implements BaseColumns {
+        public static final String TABLE_NAME = "goal_setting";
+
+        public static final String COLUMN_DAY_OF_WEEK = "day_of_week";
+        public static final String COLUMN_GOAL = "goal";
     }
 }
