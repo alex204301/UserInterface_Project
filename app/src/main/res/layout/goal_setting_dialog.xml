@@ -10,7 +10,7 @@
         android:layout_marginHorizontal="24dp"
         android:hint="@string/set_goal_edit_hint"
         android:importantForAutofill="no"
-        android:inputType="number"
+        android:inputType="numberSigned"
         android:maxLength="7"
         android:selectAllOnFocus="true">
 

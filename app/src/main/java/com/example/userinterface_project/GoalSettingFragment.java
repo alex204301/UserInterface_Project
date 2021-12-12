@@ -2,6 +2,7 @@ package com.example.userinterface_project;
 
 import android.app.Dialog;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,7 @@ import com.example.userinterface_project.db.WordDbHelper;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +75,12 @@ public class GoalSettingFragment extends Fragment {
         );
 
         refreshList();
+
+        if (savedInstanceState == null) {
+            GoalListAdapter adapter = (GoalListAdapter) recyclerView.getAdapter();
+            assert adapter != null;
+            recyclerView.scrollToPosition(adapter.getTodayPosition()); // 오늘 날짜로 스크롤
+        }
 
         getChildFragmentManager().setFragmentResultListener(
                 "dialogResult", this, (requestKey, result) -> {
@@ -120,14 +129,23 @@ public class GoalSettingFragment extends Fragment {
             calendar.set(Calendar.DAY_OF_WEEK, requireArguments().getInt(ARG_DAY_OF_WEEK));
             String dayOfWeek = calendar.getDisplayName(
                     Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+
+            LayoutInflater inflater = LayoutInflater.from(requireContext());
+            View dialogView = inflater.inflate(R.layout.goal_setting_dialog, null);
+            EditText goalEdit = dialogView.findViewById(R.id.goal_edit);
+
+            int goal = requireArguments().getInt(ARG_GOAL);
+            if (goal != -1) {
+                goalEdit.setText(String.valueOf(goal));
+                goalEdit.selectAll();
+            }
             AlertDialog dialog = new AlertDialog.Builder(requireContext())
                     .setTitle(dayOfWeek + " 목표 설정")
-                    .setView(R.layout.goal_setting_dialog)
+                    .setView(dialogView)
                     .setPositiveButton("설정", (dialog1, which) -> {
                         Bundle bundle = new Bundle();
                         bundle.putInt(ARG_DAY_OF_WEEK, requireArguments().getInt(ARG_DAY_OF_WEEK));
-                        EditText numberEdit = requireDialog().findViewById(R.id.goal_edit);
-                        bundle.putInt(ARG_GOAL, Integer.parseInt(numberEdit.getText().toString()));
+                        bundle.putInt(ARG_GOAL, Integer.parseInt(goalEdit.getText().toString()));
                         getParentFragmentManager().setFragmentResult("dialogResult", bundle);
                     })
                     .create();
@@ -164,9 +182,11 @@ public class GoalSettingFragment extends Fragment {
             GoalListItem item = items.get(position);
 
             if (item.getDate().equals(today)) {
-                holder.dateText.setText(dateFormat.format(item.getDate()) + " (오늘)");
+                holder.dateText.setText(dateFormat.format(item.getDate()));
+                holder.dateText.setTypeface(null, Typeface.BOLD);
             } else {
                 holder.dateText.setText(dateFormat.format(item.getDate()));
+                holder.dateText.setTypeface(null, Typeface.NORMAL);
             }
 
             if (item.getGoal() == -1) {
@@ -207,6 +227,11 @@ public class GoalSettingFragment extends Fragment {
 
                 itemView.setOnClickListener(v -> {
                     GoalListItem item = items.get(getAdapterPosition());
+                    if (item.getDate().before(today)) {
+                        Toast.makeText(getContext(),
+                                "지난 목표는 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(item.getDate());
                     GoalSettingDialogFragment
@@ -214,6 +239,12 @@ public class GoalSettingFragment extends Fragment {
                             .show(getChildFragmentManager(), null);
                 });
             }
+        }
+
+        public int getTodayPosition() {
+            //noinspection ComparatorCombinators
+            return Collections.binarySearch(items, new GoalListItem(today, 0, 0),
+                    (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
         }
     }
 }
