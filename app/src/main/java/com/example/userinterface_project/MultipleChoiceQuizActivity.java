@@ -53,9 +53,15 @@ public class MultipleChoiceQuizActivity extends AppCompatActivity
         }
 
         if (savedInstanceState == null) {
+            ArrayList<Word> questions = makeQuestions();
+            if (questions.size() == 0) {
+                Toast.makeText(this, R.string.questions_empty, Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MultipleChoiceQuizFragment.newInstance(
-                            this, makeQuestions(), isTypeWord)).commit();
+                            this, questions, isTypeWord)).commit();
 
             WordDbHelper dbHelper = WordDbHelper.getInstance(this);
             dbHelper.updateLastStudiedDate(noteId, new Date()); // 최근 학습 날짜 업데이트
