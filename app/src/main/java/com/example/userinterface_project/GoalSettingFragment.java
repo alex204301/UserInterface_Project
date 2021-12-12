@@ -1,14 +1,18 @@
 package com.example.userinterface_project;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -145,10 +149,26 @@ public class GoalSettingFragment extends Fragment {
                     .setPositiveButton("설정", (dialog1, which) -> {
                         Bundle bundle = new Bundle();
                         bundle.putInt(ARG_DAY_OF_WEEK, requireArguments().getInt(ARG_DAY_OF_WEEK));
-                        bundle.putInt(ARG_GOAL, Integer.parseInt(goalEdit.getText().toString()));
+                        String s = goalEdit.getText().toString();
+                        bundle.putInt(ARG_GOAL, s.isEmpty() ? -1 : Integer.parseInt(s));
                         getParentFragmentManager().setFragmentResult("dialogResult", bundle);
                     })
                     .create();
+            goalEdit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    Button button = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                    button.setEnabled(s.length() != 0);
+                }
+            });
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             return dialog;
         }
