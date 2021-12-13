@@ -166,7 +166,15 @@ public class GoalSettingFragment extends Fragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     Button button = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                    button.setEnabled(s.length() != 0);
+                    boolean enabled = true;
+                    try {
+                        if (Integer.parseInt(s.toString()) < 0) {
+                            enabled = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        enabled = false;
+                    }
+                    button.setEnabled(enabled);
                 }
             });
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -234,6 +242,12 @@ public class GoalSettingFragment extends Fragment {
             notifyDataSetChanged();
         }
 
+        public int getTodayPosition() {
+            //noinspection ComparatorCombinators
+            return Collections.binarySearch(items, new GoalListItem(today, 0, 0),
+                    (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+        }
+
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView dateText;
             TextView goalText;
@@ -259,12 +273,6 @@ public class GoalSettingFragment extends Fragment {
                             .show(getChildFragmentManager(), null);
                 });
             }
-        }
-
-        public int getTodayPosition() {
-            //noinspection ComparatorCombinators
-            return Collections.binarySearch(items, new GoalListItem(today, 0, 0),
-                    (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
         }
     }
 }
